@@ -1,0 +1,37 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useLanguage } from '@/lib/language-context'
+import { articleServices } from '@/services/articleApi'
+import { SectionHeading } from '@/components/ui/section-heading'
+import { ArticleCard } from '@/components/ArticleCard'
+import type { Article } from '@/lib/types'
+
+export function ArticlesSection() {
+  const { t } = useLanguage()
+  const [articles, setArticles] = useState<Article[]>([])
+
+  useEffect(() => {
+    articleServices.getAll().then(setArticles).catch(() => setArticles([]))
+  }, [])
+
+  const folkRemedies = articles.filter((a) => a.category === 'bai-thuoc')
+
+  return (
+    <section className="py-12 bg-background">
+      <div className="container mx-auto px-4">
+        <SectionHeading
+          title={t('folkRemediesSection')}
+          viewAllLink="/bai-thuoc-dan-gian"
+          viewAllText={t('viewAll')}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {folkRemedies.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

@@ -1,0 +1,23 @@
+import { api } from "@/lib/apiClient";
+import type { MembershipLevel, MembershipPackage, MembershipOrder, Address, PaginatedResponse } from "@/lib/types";
+import { unwrapList } from "./apiList";
+
+export interface MembershipOrderPayload {
+  packageId: string;
+  paymentMethod: 'cod' | 'bank' | 'vnpay';
+  shippingAddress?: Omit<Address, "id">;
+  note?: string;
+  returnUrl?: string;
+}
+
+export const membershipServices = {
+  getLevels: () => api.get<MembershipLevel[]>("/membership-levels"),
+  getPackages: () => api.get<MembershipPackage[]>("/membership-packages"),
+  createOrder: (data: MembershipOrderPayload) =>
+    api.post<{ order: MembershipOrder; paymentUrl?: string }>("/membership-orders", data),
+  getMyOrders: async () =>
+    unwrapList(await api.get<MembershipOrder[] | PaginatedResponse<MembershipOrder>>("/membership-orders/my")),
+  getMyOrdersPaginated: (params?: { page?: number; limit?: number }) =>
+    api.get<PaginatedResponse<MembershipOrder>>("/membership-orders/my", { params }),
+  getOrderById: (id: string) => api.get<MembershipOrder>(`/membership-orders/${id}`),
+};
