@@ -85,7 +85,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">
           <Link href="/" className="inline-block mx-auto mb-4">
-              <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-2">
               <div className="relative w-12 h-12 overflow-hidden rounded-full bg-white ring-1 ring-primary/25">
                 <Image
                   src="/3956976912911290196.jpg"
@@ -96,7 +96,9 @@ export default function LoginPage() {
                   priority
                 />
               </div>
-              <span className="text-2xl font-bold text-primary">AN GIA GREEN</span>
+              <span className="text-2xl font-bold text-primary">
+                AN GIA GREEN
+              </span>
             </div>
           </Link>
           <h1 className="text-2xl font-bold text-foreground">{t("login")}</h1>
@@ -120,7 +122,9 @@ export default function LoginPage() {
                   placeholder="email@example.com"
                   className="pl-10"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -144,7 +148,9 @@ export default function LoginPage() {
                   placeholder={copy.passwordPlaceholder}
                   className="pl-10 pr-10"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   required
                 />
                 <button
@@ -152,7 +158,11 @@ export default function LoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -175,7 +185,9 @@ export default function LoginPage() {
                 <div className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-card text-muted-foreground">{copy.or}</span>
+                <span className="px-2 bg-card text-muted-foreground">
+                  {copy.or}
+                </span>
               </div>
             </div>
 
@@ -202,7 +214,11 @@ export default function LoginPage() {
                 Google
               </Button>
               <Button variant="outline" type="button">
-                <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
                 Facebook
@@ -212,7 +228,10 @@ export default function LoginPage() {
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             {copy.noAccount}{" "}
-            <Link href="/dang-ky" className="text-primary font-medium hover:underline">
+            <Link
+              href="/dang-ky"
+              className="text-primary font-medium hover:underline"
+            >
               {t("register")}
             </Link>
           </p>
