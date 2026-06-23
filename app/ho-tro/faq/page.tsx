@@ -10,9 +10,9 @@ import {
 } from "@/components/pages/shared/contentHelpers";
 import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { contentServices } from "@/services/contentApi";
-import type { ContentPage } from "@/lib/types";
+import type { ContentPage } from "@/interface/types";
 
 export default function FaqPage() {
   const { language } = useLanguage();

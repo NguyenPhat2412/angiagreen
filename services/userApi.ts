@@ -1,5 +1,5 @@
 import { api } from "@/lib/apiClient";
-import type { Address, PaymentMethod, Product, User } from "@/lib/types";
+import type { Address, PaymentMethod, Product, User } from "@/interface/types";
 
 export type UserPayload = Record<string, unknown>;
 

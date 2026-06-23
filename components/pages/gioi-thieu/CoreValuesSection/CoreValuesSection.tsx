@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import type { Language } from "@/lib/types";
+import type { Language } from "@/interface/types";
 import type { AboutCopy, AboutValue } from "@/components/pages/gioi-thieu/types";
 
 interface CoreValuesSectionProps {

@@ -23,10 +23,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useAuth } from "@/lib/auth-context";
-import { useLanguage } from "@/lib/language-context";
+import { useAuth } from "@/context/auth-context";
+import { useLanguage } from "@/context/language-context";
 import Breadcrumb from "@/components/Breadcrumb";
-import type { Language, MembershipLevelId } from "@/lib/types";
+import type { Language, MembershipLevelId } from "@/interface/types";
 
 const membershipColors = {
   member: "bg-zinc-500",
@@ -338,7 +338,7 @@ export default function AccountPage() {
                           >
                             <div className="flex-shrink-0">
                               <Image
-                                src={order.items[0].image}
+                                src={order.items[0].productImage || order.items[0].image || "/placeholder.jpg"}
                                 alt={(order.items[0] as { name?: string; productName?: string }).name ?? order.items[0].productName}
                                 width={60}
                                 height={60}
@@ -407,7 +407,7 @@ export default function AccountPage() {
                               {order.items.map((item, index) => (
                                 <div key={index} className="flex items-center gap-4">
                                   <Image
-                                    src={item.image}
+                                    src={item.productImage || item.image || "/placeholder.jpg"}
                                     alt={(item as { name?: string; productName?: string }).name ?? item.productName}
                                     width={60}
                                     height={60}
@@ -416,11 +416,11 @@ export default function AccountPage() {
                                   <div className="flex-1">
                                     <p className="font-medium">{(item as { name?: string; productName?: string }).name ?? item.productName}</p>
                                     <p className="text-sm text-muted-foreground">
-                                      {item.price.toLocaleString()}d x {item.quantity}
+                                      {(item.unitPrice || item.price || 0).toLocaleString()}d x {item.quantity}
                                     </p>
                                   </div>
                                   <p className="font-semibold">
-                                    {(item.price * item.quantity).toLocaleString()}d
+                                    {((item.unitPrice || item.price || 0) * item.quantity).toLocaleString()}d
                                   </p>
                                 </div>
                               ))}

@@ -7,8 +7,8 @@ import { AccountFeaturePage } from "@/components/pages/shared/AccountFeaturePage
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatPrice } from "@/lib/data";
-import { useAuth } from "@/lib/auth-context";
+import { formatPrice } from "@/language/data";
+import { useAuth } from "@/context/auth-context";
 
 const statusLabels = {
   pending: "Chờ xử lý",
@@ -46,7 +46,7 @@ export default function AccountOrdersPage() {
                   {order.items.map((item) => (
                     <div key={item.productId} className="flex items-center gap-4 rounded-lg border p-3">
                       <Image
-                        src={item.image}
+                        src={item.productImage || item.image || "/placeholder.jpg"}
                         alt={item.productName}
                         width={56}
                         height={56}
@@ -55,7 +55,7 @@ export default function AccountOrdersPage() {
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-medium">{item.productName}</p>
                         <p className="text-sm text-muted-foreground">
-                          {item.quantity} x {formatPrice(item.price)}
+                          {item.quantity} x {formatPrice(item.unitPrice || item.price || 0)}
                         </p>
                       </div>
                     </div>

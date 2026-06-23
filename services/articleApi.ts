@@ -1,6 +1,7 @@
 import { api } from "@/lib/apiClient";
-import type { Article, PaginatedResponse } from "@/lib/types";
+import type { Article, PaginatedResponse } from "@/interface/types";
 import { unwrapList } from "./apiList";
+import { articles } from "@/language/data";
 
 export type ArticleQuery = {
   category?: string;
@@ -12,7 +13,23 @@ export type ArticleQuery = {
 
 export const articleServices = {
   getAll: async (params?: ArticleQuery) =>
-    unwrapList(await api.get<Article[] | PaginatedResponse<Article>>("/articles", { params })),
-  getPaginated: (params?: ArticleQuery) => api.get<PaginatedResponse<Article>>("/articles", { params }),
-  getBySlug: (slug: string) => api.get<Article>(`/articles/${slug}`),
+    api.get<Article[] | PaginatedResponse<Article>>("/articles", { params })
+      .then(unwrapList)
+      .catch(() => articles),
+  getPaginated: (params?: ArticleQuery) =>
+    api.get<PaginatedResponse<Article>>("/articles", { params })
+      .catch(() => ({
+        items: articles,
+        total: articles.length,
+        page: params?.page || 1,
+        limit: params?.limit || 10,
+        pages: 1,
+      })),
+  getBySlug: (slug: string) =>
+    api.get<Article>(`/articles/${slug}`)
+      .catch(() => {
+        const art = articles.find((a) => a.id === slug || a.title.vi === slug);
+        if (art) return art;
+        throw new Error("Article not found");
+      }),
 };

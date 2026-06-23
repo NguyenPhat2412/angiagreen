@@ -3,16 +3,16 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useLanguage } from '@/lib/language-context'
-import { useCart } from '@/lib/cart-context'
-import { formatPrice } from '@/lib/data'
+import { useLanguage } from '@/context/language-context'
+import { useCart } from '@/context/cart-context'
+import { formatPrice } from '@/language/data'
 import { productServices } from '@/services/productApi'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Tag } from 'lucide-react'
-import type { Product } from '@/lib/types'
+import type { Product } from '@/interface/types'
 
 export default function CartPage() {
   const { language, t } = useLanguage()

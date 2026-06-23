@@ -10,12 +10,12 @@ import { localizedText } from "@/components/pages/shared/contentHelpers";
 import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatPrice } from "@/lib/data";
-import { useLanguage } from "@/lib/language-context";
-import { useAuth } from "@/lib/auth-context";
+import { formatPrice } from "@/language/data";
+import { useLanguage } from "@/context/language-context";
+import { useAuth } from "@/context/auth-context";
 import { membershipServices } from "@/services/membershipApi";
 import { contentServices } from "@/services/contentApi";
-import type { ContentPage, MembershipPackage } from "@/lib/types";
+import type { ContentPage, MembershipPackage } from "@/interface/types";
 
 export default function MembershipPackageDetailPage() {
   const params = useParams();

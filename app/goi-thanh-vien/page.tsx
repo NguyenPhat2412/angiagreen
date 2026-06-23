@@ -11,13 +11,13 @@ import {
 } from "@/components/pages/shared/contentHelpers";
 import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { membershipServices } from "@/services/membershipApi";
 import { contentServices } from "@/services/contentApi";
-import type { ContentPage, MembershipPackage } from "@/lib/types";
+import type { ContentPage, MembershipPackage } from "@/interface/types";
 
 export default function MembershipPackagesPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [packages, setPackages] = useState<MembershipPackage[]>([]);
   const [page, setPage] = useState<ContentPage | null>();
 
@@ -56,31 +56,36 @@ export default function MembershipPackagesPage() {
   return (
     <InfoPageShell
       badge={page?.badge || "Membership Combo"}
+      imageUrl={page?.imageUrl}
       breadcrumbs={[
-        { label: "Trang chủ", href: "/" },
-        { label: "Gói thành viên" },
+        { label: t("home"), href: "/" },
+        { label: t("membershipCombo") },
       ]}
       description={
         page
           ? localizedText(page.description, language)
+          : language === "en"
+          ? "Choose a health care package based on your needs, combining herbal products, shopping discounts, and periodic consultations."
+          : language === "zh"
+          ? "根据您的需求选择健康护理套餐，结合草药产品、购物优惠和定期咨询。"
           : "Lựa chọn gói chăm sóc sức khỏe theo nhu cầu, kết hợp sản phẩm thảo dược, ưu đãi mua sắm và tư vấn định kỳ."
       }
       highlights={
         page
           ? mapContentHighlights(page.highlights, language)
           : [
-              { label: "Gói linh hoạt", value: "4+" },
-              { label: "Ưu đãi tối đa", value: "15%" },
+              { label: language === "en" ? "Flexible Packages" : language === "zh" ? "灵活套餐" : "Gói linh hoạt", value: "4+" },
+              { label: language === "en" ? "Max Discount" : language === "zh" ? "最大优惠" : "Ưu đãi tối đa", value: "15%" },
             ]
       }
       icon={Icon}
-      title={page ? localizedText(page.title, language) : "Combo thành viên An Gia Green"}
+      title={page ? localizedText(page.title, language) : t("membershipCombo")}
       actions={
         page?.actions?.length
           ? mapContentActions(page.actions, language)
           : [
-              { href: "/thanh-vien", label: "Xem cấp bậc", variant: "outline" },
-              { href: "/tu-van", label: "Cần tư vấn" },
+              { href: "/thanh-vien", label: language === "en" ? "View Levels" : language === "zh" ? "查看等级" : "Xem cấp bậc", variant: "outline" },
+              { href: "/tu-van", label: language === "en" ? "Need Advice" : language === "zh" ? "需要咨询" : "Cần tư vấn" },
             ]
       }
     >
@@ -105,9 +110,9 @@ export default function MembershipPackagesPage() {
 
       <section className="mt-10">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold">Danh sách combo</h2>
+          <h2 className="text-2xl font-bold">{t("comboList")}</h2>
           <p className="mt-2 text-muted-foreground">
-            Chọn gói phù hợp với nhu cầu của cá nhân hoặc gia đình.
+            {t("comboListSub")}
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">

@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { productServices } from "@/services/productApi";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
-import type { Product } from "@/lib/types";
+import type { Product } from "@/interface/types";
 
 interface ProductsSectionProps {
   title: string;

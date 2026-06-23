@@ -4,10 +4,10 @@ import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useLanguage } from '@/lib/language-context'
-import { useCart } from '@/lib/cart-context'
-import { useAuth } from '@/lib/auth-context'
-import { formatPrice } from '@/lib/data'
+import { useLanguage } from '@/context/language-context'
+import { useCart } from '@/context/cart-context'
+import { useAuth } from '@/context/auth-context'
+import { formatPrice } from '@/language/data'
 import { orderServices } from '@/services/orderApi'
 import { productServices } from '@/services/productApi'
 import { Breadcrumb } from '@/components/Breadcrumb'
@@ -26,7 +26,7 @@ import {
   Banknote,
   Copy,
 } from 'lucide-react'
-import type { Order, Product } from '@/lib/types'
+import type { Order, Product } from '@/interface/types'
 
 function CheckoutContent() {
   const { language, t } = useLanguage()

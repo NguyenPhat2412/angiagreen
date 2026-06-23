@@ -5,12 +5,14 @@ import { MapPin, Plus } from "lucide-react";
 import { AccountFeaturePage } from "@/components/pages/shared/AccountFeaturePage/AccountFeaturePage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAuth } from "@/lib/auth-context";
-import type { Address } from "@/lib/types";
+import { useAuth } from "@/context/auth-context";
+import type { Address } from "@/interface/types";
 import { userServices } from "@/services/userApi";
+import { useLanguage } from "@/context/language-context";
 
 export default function AccountAddressesPage() {
   const { isLoggedIn } = useAuth();
+  const { t } = useLanguage();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -74,7 +76,7 @@ export default function AccountAddressesPage() {
           <CardContent className="p-10 text-center">
             <MapPin className="mx-auto mb-4 h-14 w-14 text-muted-foreground" />
             <h2 className="text-xl font-semibold">
-              {isLoaded ? "Chưa có địa chỉ" : "Đang tải địa chỉ"}
+              {isLoaded ? "Chưa có địa chỉ" : t("loadingAddress")}
             </h2>
             <p className="mt-2 text-muted-foreground">
               Địa chỉ giao hàng sẽ được đọc và cập nhật qua backend tài khoản.

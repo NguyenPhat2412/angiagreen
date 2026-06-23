@@ -4,9 +4,9 @@ import { Suspense, useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useLanguage } from '@/lib/language-context'
-import { useAuth } from '@/lib/auth-context'
-import { formatPrice } from '@/lib/data'
+import { useLanguage } from '@/context/language-context'
+import { useAuth } from '@/context/auth-context'
+import { formatPrice } from '@/language/data'
 import { membershipServices } from '@/services/membershipApi'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { Button } from '@/components/ui/button'
@@ -26,7 +26,7 @@ import {
   Copy,
   Check,
 } from 'lucide-react'
-import type { MembershipPackage } from '@/lib/types'
+import type { MembershipPackage } from '@/interface/types'
 
 function MembershipCheckoutContent() {
   const { language, t } = useLanguage()

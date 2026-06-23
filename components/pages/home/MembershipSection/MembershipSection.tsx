@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { membershipServices } from "@/services/membershipApi";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { MembershipCard } from "@/components/MembershipCard";
-import type { MembershipPackage } from "@/lib/types";
+import type { MembershipPackage } from "@/interface/types";
 
 export function MembershipSection() {
   const { t } = useLanguage();

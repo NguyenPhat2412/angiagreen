@@ -9,13 +9,13 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { articleServices } from "@/services/articleApi";
-import type { Article } from "@/lib/types";
+import type { Article } from "@/interface/types";
 
 export default function ArticleDetailPage() {
   const params = useParams();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [article, setArticle] = useState<Article | null>();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
 
@@ -35,9 +35,9 @@ export default function ArticleDetailPage() {
     return (
       <main className="min-h-screen bg-muted/30">
         <div className="container mx-auto px-4 py-16 text-center">
-          <p className="text-muted-foreground">Khong tim thay bai viet.</p>
+          <p className="text-muted-foreground">{t("articleNotFound")}</p>
           <Button className="mt-4" asChild>
-            <Link href="/tin-tuc">Quay lai tin tuc</Link>
+            <Link href="/tin-tuc">{t("backToNews")}</Link>
           </Button>
         </div>
       </main>
@@ -49,7 +49,7 @@ export default function ArticleDetailPage() {
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb
           items={[
-            { label: "Tin tuc", href: "/tin-tuc" },
+            { label: t("news"), href: "/tin-tuc" },
             { label: article.title[language] },
           ]}
         />

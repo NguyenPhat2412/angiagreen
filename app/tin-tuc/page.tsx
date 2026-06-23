@@ -8,28 +8,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { articleServices } from "@/services/articleApi";
 import Breadcrumb from "@/components/Breadcrumb";
-import type { Article } from "@/lib/types";
+import type { Article } from "@/interface/types";
 
 const categories = [
-  { name: "Tat ca", count: 24 },
-  { name: "Suc khoe", count: 12 },
-  { name: "Dinh duong", count: 8 },
-  { name: "Lam dep", count: 4 },
-  { name: "Khuyen mai", count: 6 },
+  { id: "all", label: { vi: "Tất cả", en: "All", zh: "全部" }, count: 24 },
+  { id: "suc-khoe", label: { vi: "Sức khỏe", en: "Health", zh: "健康" }, count: 12 },
+  { id: "dinh-duong", label: { vi: "Dinh dưỡng", en: "Nutrition", zh: "营养" }, count: 8 },
+  { id: "lam-dep", label: { vi: "Làm đẹp", en: "Beauty", zh: "美容" }, count: 4 },
+  { id: "khuyen-mai", label: { vi: "Khuyến mãi", en: "Promotion", zh: "促销" }, count: 6 },
 ];
 
 const tags = [
-  "Thao duoc",
-  "Giac ngu",
-  "Tim mach",
-  "Tang de khang",
-  "Giam can",
-  "Da lieu",
-  "Xuong khop",
-  "Tieu hoa",
+  { id: "thao-duoc", label: { vi: "Thảo dược", en: "Herbs", zh: "草药" } },
+  { id: "giac-ngu", label: { vi: "Giấc ngủ", en: "Sleep", zh: "睡眠" } },
+  { id: "tim-mach", label: { vi: "Tim mạch", en: "Cardiovascular", zh: "心血管" } },
+  { id: "de-khang", label: { vi: "Tăng đề kháng", en: "Immunity", zh: "免疫力" } },
+  { id: "giam-can", label: { vi: "Giảm cân", en: "Weight Loss", zh: "减肥" } },
+  { id: "da-lieu", label: { vi: "Da liễu", en: "Dermatology", zh: "皮肤科" } },
+  { id: "xuong-khop", label: { vi: "Xương khớp", en: "Bones & Joints", zh: "骨骼与关节" } },
+  { id: "tieu-hoa", label: { vi: "Tiêu hóa", en: "Digestive", zh: "消化" } },
 ];
 
 export default function NewsPage() {
@@ -58,9 +58,9 @@ export default function NewsPage() {
         />
 
         <div className="mt-6 mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Tin tuc & Bai viet</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">{t("newsTitle")}</h1>
           <p className="text-muted-foreground">
-            Cap nhat kien thuc suc khoe va thong tin moi nhat tu An Gia Green
+            {t("newsSubtitle")}
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export default function NewsPage() {
                     fill
                     className="object-cover"
                   />
-                  <Badge className="absolute top-4 left-4 bg-primary">Noi bat</Badge>
+                  <Badge className="absolute top-4 left-4 bg-primary">{t("featured")}</Badge>
                 </div>
                 <CardContent className="p-6 flex flex-col justify-center">
                   <Badge variant="outline" className="w-fit mb-3">
@@ -103,7 +103,7 @@ export default function NewsPage() {
                   </div>
                   <Button asChild className="w-fit">
                     <Link href={`/tin-tuc/${featuredArticle.slug}`}>
-                      Doc tiep
+                      {t("readMore")}
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
@@ -138,7 +138,7 @@ export default function NewsPage() {
                         <Calendar className="h-4 w-4" />
                         {new Date(article.publishedAt).toLocaleDateString("vi-VN")}
                       </div>
-                      <span>5 phut doc</span>
+                      <span>5 {t("minRead")}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -148,14 +148,14 @@ export default function NewsPage() {
             {/* Pagination */}
             <div className="flex justify-center gap-2 mt-8">
               <Button variant="outline" disabled>
-                Truoc
+                {t("prev")}
               </Button>
               <Button variant="outline" className="bg-primary text-primary-foreground">
                 1
               </Button>
               <Button variant="outline">2</Button>
               <Button variant="outline">3</Button>
-              <Button variant="outline">Sau</Button>
+              <Button variant="outline">{t("next")}</Button>
             </div>
           </div>
 
@@ -166,7 +166,7 @@ export default function NewsPage() {
               <CardContent className="p-4">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Tim kiem bai viet..." className="pl-10" />
+                  <Input placeholder={t("searchArticle")} className="pl-10" />
                 </div>
               </CardContent>
             </Card>
@@ -176,16 +176,16 @@ export default function NewsPage() {
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-4 flex items-center gap-2">
                   <Tag className="h-4 w-4" />
-                  Danh muc
+                  {t("categoryTitle")}
                 </h3>
                 <div className="space-y-2">
                   {categories.map((cat, index) => (
                     <Link
                       key={index}
-                      href={`/tin-tuc?category=${cat.name}`}
+                      href={`/tin-tuc?category=${cat.id}`}
                       className="flex items-center justify-between p-2 rounded-lg hover:bg-muted transition-colors"
                     >
-                      <span>{cat.name}</span>
+                      <span>{cat.label[language]}</span>
                       <Badge variant="secondary">{cat.count}</Badge>
                     </Link>
                   ))}
@@ -196,7 +196,7 @@ export default function NewsPage() {
             {/* Tags */}
             <Card>
               <CardContent className="p-4">
-                <h3 className="font-semibold mb-4">Tag pho bien</h3>
+                <h3 className="font-semibold mb-4">{t("popularTags")}</h3>
                 <div className="flex flex-wrap gap-2">
                   {tags.map((tag, index) => (
                     <Badge
@@ -204,7 +204,7 @@ export default function NewsPage() {
                       variant="outline"
                       className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors"
                     >
-                      {tag}
+                      {tag.label[language]}
                     </Badge>
                   ))}
                 </div>
@@ -214,16 +214,16 @@ export default function NewsPage() {
             {/* Newsletter */}
             <Card className="bg-primary text-primary-foreground">
               <CardContent className="p-6">
-                <h3 className="font-semibold mb-2">Dang ky nhan tin</h3>
+                <h3 className="font-semibold mb-2">{t("newsSubscribeTitle")}</h3>
                 <p className="text-sm text-primary-foreground/80 mb-4">
-                  Nhan thong tin suc khoe va uu dai moi nhat
+                  {t("newsSubscribeDesc")}
                 </p>
                 <Input
-                  placeholder="Email cua ban"
+                  placeholder={t("yourEmail")}
                   className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 mb-3"
                 />
                 <Button variant="secondary" className="w-full">
-                  Dang ky
+                  {t("subscribeButton")}
                 </Button>
               </CardContent>
             </Card>

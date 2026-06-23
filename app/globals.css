@@ -192,3 +192,15 @@
 .notice-bell {
   animation: notice-bell-ring 1.2s ease-in-out infinite;
 }
+
+@keyframes sweep {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}

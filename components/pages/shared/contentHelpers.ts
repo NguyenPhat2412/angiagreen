@@ -1,4 +1,4 @@
-import type { ContentAction, ContentHighlight, Language } from "@/lib/types";
+import type { ContentAction, ContentHighlight, Language } from "@/interface/types";
 
 type LocalizedValue = Partial<Record<Language, string>> | undefined;
 

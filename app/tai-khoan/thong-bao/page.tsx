@@ -5,10 +5,10 @@ import { Bell, CheckCheck } from "lucide-react";
 import { AccountFeaturePage } from "@/components/pages/shared/AccountFeaturePage/AccountFeaturePage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAuth } from "@/lib/auth-context";
-import { useLanguage } from "@/lib/language-context";
+import { useAuth } from "@/context/auth-context";
+import { useLanguage } from "@/context/language-context";
 import { notificationServices } from "@/services/notificationApi";
-import type { Notification } from "@/lib/types";
+import type { Notification } from "@/interface/types";
 
 export default function AccountNotificationsPage() {
   const { isLoggedIn } = useAuth();

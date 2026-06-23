@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/lib/auth-context";
+import { useAuth } from "@/context/auth-context";
 import { userServices } from "@/services/userApi";
 
 export default function AccountProfilePage() {
@@ -29,10 +29,25 @@ export default function AccountProfilePage() {
             className="grid gap-5"
             onSubmit={async (event) => {
               event.preventDefault();
-              setIsSaving(true);
               setMessage("");
+
+              if (!name.trim() || name.trim().length < 2) {
+                setMessage("Họ tên phải có ít nhất 2 ký tự.");
+                return;
+              }
+
+              const cleanPhone = phone.replace(/\s+/g, "");
+              if (cleanPhone) {
+                const phoneRegex = /^(0|84)(3|5|7|8|9)[0-9]{8}$/;
+                if (!phoneRegex.test(cleanPhone)) {
+                  setMessage("Số điện thoại không hợp lệ (phải gồm 10 chữ số bắt đầu bằng 03, 05, 07, 08, 09).");
+                  return;
+                }
+              }
+
+              setIsSaving(true);
               try {
-                await userServices.updateMe({ name, phone });
+                await userServices.updateMe({ name: name.trim(), phone: cleanPhone });
                 setMessage("Đã lưu thông tin. Tải lại trang nếu bạn muốn đồng bộ ngay cache hiện tại.");
               } catch (error) {
                 setMessage(error instanceof Error ? error.message : "Lưu thông tin thất bại.");

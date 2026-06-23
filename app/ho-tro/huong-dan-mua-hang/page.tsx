@@ -12,9 +12,9 @@ import {
 import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { contentServices } from "@/services/contentApi";
-import type { ContentPage } from "@/lib/types";
+import type { ContentPage } from "@/interface/types";
 
 export default function ShoppingGuidePage() {
   const { language } = useLanguage();

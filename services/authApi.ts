@@ -1,5 +1,5 @@
 import { api } from "@/lib/apiClient";
-import type { User } from "@/lib/types";
+import type { User } from "@/interface/types";
 
 export type AuthResponse = {
   user: User;

@@ -7,9 +7,9 @@ import { MembershipCtaSection } from "@/components/pages/thanh-vien/MembershipCt
 import { MembershipFaqSection } from "@/components/pages/thanh-vien/MembershipFaqSection/MembershipFaqSection";
 import { MembershipHeroSection } from "@/components/pages/thanh-vien/MembershipHeroSection/MembershipHeroSection";
 import { MembershipLevelsSection } from "@/components/pages/thanh-vien/MembershipLevelsSection/MembershipLevelsSection";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { membershipServices } from "@/services/membershipApi";
-import type { MembershipLevel } from "@/lib/types";
+import type { MembershipLevel } from "@/interface/types";
 
 export default function MembershipPage() {
   const { t } = useLanguage();

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useLanguage } from '@/lib/language-context'
+import { useLanguage } from '@/context/language-context'
 import { categoryServices } from '@/services/categoryApi'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,7 +18,7 @@ import {
   Crown,
   Calendar,
 } from 'lucide-react'
-import type { Category } from '@/lib/types'
+import type { Category } from '@/interface/types'
 
 const iconMap: Record<string, React.ElementType> = {
   Package,

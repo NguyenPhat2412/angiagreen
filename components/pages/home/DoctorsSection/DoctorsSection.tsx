@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useLanguage } from '@/lib/language-context'
+import { useLanguage } from '@/context/language-context'
 import { doctorServices } from '@/services/doctorApi'
 import { SectionHeading } from '@/components/ui/section-heading'
 import { DoctorCard } from '@/components/DoctorCard'
-import type { Doctor } from '@/lib/types'
+import type { Doctor } from '@/interface/types'
 
 export function DoctorsSection() {
   const { t } = useLanguage()

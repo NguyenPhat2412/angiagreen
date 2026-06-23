@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useLanguage } from '@/lib/language-context'
+import { useLanguage } from '@/context/language-context'
 import { categoryServices } from '@/services/categoryApi'
 import { productServices } from '@/services/productApi'
 import { ProductCard } from '@/components/ProductCard'
@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Search, SlidersHorizontal, Grid3X3, LayoutList } from 'lucide-react'
-import type { Category, Product } from '@/lib/types'
+import type { Category, Product } from '@/interface/types'
 
 function ProductsContent() {
   const { language, t } = useLanguage()
@@ -79,7 +79,6 @@ function ProductsContent() {
         result.sort((a, b) => (b.rating || 0) - (a.rating || 0))
         break
       default:
-        // newest - keep original order
         break
     }
 

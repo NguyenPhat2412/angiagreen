@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useAuth } from "@/lib/auth-context";
-import { useLanguage } from "@/lib/language-context";
+import { useAuth } from "@/context/auth-context";
+import { useLanguage } from "@/context/language-context";
 
 const registerCopy = {
   vi: {
@@ -108,6 +108,36 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
 
+    // Validate phone number format
+    const cleanPhone = formData.phone.replace(/\s+/g, "");
+    const phoneRegex = /^(0|84)(3|5|7|8|9)[0-9]{8}$/;
+    if (!phoneRegex.test(cleanPhone)) {
+      setError(language === "vi" 
+        ? "Số điện thoại không hợp lệ (phải gồm 10 chữ số bắt đầu bằng 03, 05, 07, 08, 09)." 
+        : language === "zh" 
+        ? "电话号码无效（必须为10位数字且以03, 05, 07, 08, 09开头）。" 
+        : "Invalid phone number (must be 10 digits starting with 03, 05, 07, 08, 09)."
+      );
+      return;
+    }
+
+    // Validate password strength criteria
+    const isPasswordValid = 
+      formData.password.length >= 8 &&
+      /[A-Z]/.test(formData.password) &&
+      /[a-z]/.test(formData.password) &&
+      /[0-9]/.test(formData.password);
+
+    if (!isPasswordValid) {
+      setError(language === "vi" 
+        ? "Mật khẩu không đủ mạnh. Phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường và chữ số." 
+        : language === "zh" 
+        ? "密码强度不够。必须至少8个字符，包含大小写字母和数字。" 
+        : "Password is not strong enough. Must be at least 8 characters, and contain uppercase, lowercase, and numeric characters."
+      );
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError(copy.passwordMismatch);
       return;
@@ -124,7 +154,7 @@ export default function RegisterPage() {
       const success = await register(
         formData.name,
         formData.email,
-        formData.phone,
+        cleanPhone,
         formData.password
       );
       if (success) {

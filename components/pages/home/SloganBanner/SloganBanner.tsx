@@ -1,6 +1,6 @@
 'use client'
 
-import { useLanguage } from '@/lib/language-context'
+import { useLanguage } from '@/context/language-context'
 import { Leaf, Shield, Heart, Award } from 'lucide-react'
 
 export function SloganBanner() {

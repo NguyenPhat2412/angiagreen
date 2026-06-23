@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useLanguage } from '@/lib/language-context'
+import { useLanguage } from '@/context/language-context'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Leaf, Users, Globe, Heart } from 'lucide-react'
 

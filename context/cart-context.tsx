@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { productServices } from '@/services/productApi'
-import type { CartItem, Product } from './types'
+import type { CartItem, Product } from '../interface/types'
 
 interface CartContextType {
   items: CartItem[]

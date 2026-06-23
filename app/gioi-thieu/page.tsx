@@ -8,8 +8,8 @@ import { CertificationsSection } from "@/components/pages/gioi-thieu/Certificati
 import { CoreValuesSection } from "@/components/pages/gioi-thieu/CoreValuesSection/CoreValuesSection";
 import { MissionVisionSection } from "@/components/pages/gioi-thieu/MissionVisionSection/MissionVisionSection";
 import { TimelineSection } from "@/components/pages/gioi-thieu/TimelineSection/TimelineSection";
-import { useLanguage } from "@/lib/language-context";
-import type { Language } from "@/lib/types";
+import { useLanguage } from "@/context/language-context";
+import type { Language } from "@/interface/types";
 
 const stats: Array<{ value: string; label: Record<Language, string> }> = [
   { value: "10+", label: { vi: "Năm kinh nghiệm", en: "Years of experience", zh: "年经验" } },

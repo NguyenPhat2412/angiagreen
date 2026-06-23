@@ -7,14 +7,14 @@ import { InfoPageShell } from "@/components/pages/shared/InfoPageShell/InfoPageS
 import { localizedText } from "@/components/pages/shared/contentHelpers";
 import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { contentServices } from "@/services/contentApi";
-import type { ContentPage } from "@/lib/types";
+import type { ContentPage } from "@/interface/types";
 
 const policySlugFromKey = (key: string) => key.replace("policy.", "");
 
 export default function PoliciesIndexPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [policies, setPolicies] = useState<ContentPage[]>([]);
 
   useEffect(() => {
@@ -83,7 +83,7 @@ export default function PoliciesIndexPage() {
       {policies.length === 0 && (
         <Card>
           <CardContent className="p-10 text-center text-muted-foreground">
-            Đang tải nội dung chính sách từ hệ thống.
+            {t("loadingPolicy")}
           </CardContent>
         </Card>
       )}

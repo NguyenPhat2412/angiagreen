@@ -1,11 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useLanguage } from '@/lib/language-context'
+import { useLanguage } from '@/context/language-context'
 import { articleServices } from '@/services/articleApi'
 import { SectionHeading } from '@/components/ui/section-heading'
 import { ArticleCard } from '@/components/ArticleCard'
-import type { Article } from '@/lib/types'
+import type { Article } from '@/interface/types'
 
 export function NewsSection() {
   const { t } = useLanguage()

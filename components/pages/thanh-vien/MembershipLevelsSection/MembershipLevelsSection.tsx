@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { MembershipLevel } from "@/lib/types";
+import type { MembershipLevel } from "@/interface/types";
 
 const levelColors: Record<MembershipLevel["level"], string> = {
   member: "from-zinc-400 to-zinc-600",

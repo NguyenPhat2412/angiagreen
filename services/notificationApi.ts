@@ -1,5 +1,5 @@
 import { api } from "@/lib/apiClient";
-import type { Notification, PaginatedResponse } from "@/lib/types";
+import type { Notification, PaginatedResponse } from "@/interface/types";
 import { unwrapList } from "./apiList";
 
 export const notificationServices = {

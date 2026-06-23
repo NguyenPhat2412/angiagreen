@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { authServices } from "@/services/authApi";
 import { orderServices } from "@/services/orderApi";
 import { userServices } from "@/services/userApi";
-import type { Order, User } from "./types";
+import type { Order, User } from "../interface/types";
 
 interface AuthContextType {
   user: User | null;

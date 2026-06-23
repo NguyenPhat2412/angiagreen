@@ -1,6 +1,11 @@
-import React from 'react'
+"use client";
+
+import React from 'react';
+import { useLanguage } from '@/context/language-context';
 
 export default function Loading() {
+  const { t } = useLanguage();
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
       {/* Decorative leaf icon or logo placeholder */}
@@ -28,10 +33,10 @@ export default function Loading() {
 
       {/* Loading Text */}
       <h3 className="text-lg font-medium text-emerald-800 dark:text-emerald-300 animate-pulse">
-        Đang tải dữ liệu...
+        {t("loadingData")}
       </h3>
       <p className="text-xs text-muted-foreground mt-2 animate-pulse delay-75">
-        An Gia Green đang chuẩn bị dược liệu cho bạn
+        {t("loadingPreparing")}
       </p>
 
       {/* Skeleton placeholders to simulate page structure below */}
@@ -44,5 +49,5 @@ export default function Loading() {
         </div>
       </div>
     </div>
-  )
+  );
 }

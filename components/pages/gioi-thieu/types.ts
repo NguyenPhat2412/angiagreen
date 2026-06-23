@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import type { Language } from "@/lib/types";
+import type { Language } from "@/interface/types";
 
 export interface AboutCopy {
   heroTitle: string;

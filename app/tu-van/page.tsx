@@ -29,33 +29,69 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { appointmentServices } from "@/services/appointmentApi";
 import { doctorServices } from "@/services/doctorApi";
 import Breadcrumb from "@/components/Breadcrumb";
-import type { Doctor } from "@/lib/types";
+import type { Doctor } from "@/interface/types";
 
 const consultationTypes = [
   {
     id: "phone",
     icon: Phone,
-    title: "Tu van qua dien thoai",
-    description: "Nhan cuoc goi tu van tu chuyen gia",
-    duration: "15-30 phut",
+    title: {
+      vi: "Tư vấn qua điện thoại",
+      en: "Phone Consultation",
+      zh: "电话咨询",
+    },
+    description: {
+      vi: "Nhận cuộc gọi từ chuyên gia",
+      en: "Receive a call from an expert",
+      zh: "接受专家的电话",
+    },
+    duration: {
+      vi: "15-30 phút",
+      en: "15-30 mins",
+      zh: "15-30 分钟",
+    },
   },
   {
     id: "video",
     icon: Video,
-    title: "Tu van qua video call",
-    description: "Gap truc tiep chuyen gia qua video",
-    duration: "20-45 phut",
+    title: {
+      vi: "Tư vấn qua video call",
+      en: "Video Consultation",
+      zh: "视频通话咨询",
+    },
+    description: {
+      vi: "Trao đổi trực tiếp qua video",
+      en: "Face-to-face video consult",
+      zh: "视频直接交流",
+    },
+    duration: {
+      vi: "20-45 phút",
+      en: "20-45 mins",
+      zh: "20-45 分钟",
+    },
   },
   {
     id: "chat",
     icon: MessageCircle,
-    title: "Tu van qua chat",
-    description: "Nhan tin trao doi voi chuyen gia",
-    duration: "Khong gioi han",
+    title: {
+      vi: "Tư vấn qua chat",
+      en: "Chat Consultation",
+      zh: "在线聊天咨询",
+    },
+    description: {
+      vi: "Nhắn tin trao đổi với chuyên gia",
+      en: "Message exchange with expert",
+      zh: "在线消息交流",
+    },
+    duration: {
+      vi: "Không giới hạn",
+      en: "Unlimited",
+      zh: "无限制",
+    },
   },
 ];
 
@@ -71,15 +107,15 @@ const timeSlots = [
 ];
 
 const healthTopics = [
-  "Suc khoe tim mach",
-  "He tieu hoa",
-  "Xuong khop",
-  "Than kinh - giac ngu",
-  "Tang de khang",
-  "Lam dep - da lieu",
-  "Suc khoe nam gioi",
-  "Suc khoe phu nu",
-  "Khac",
+  { id: "tim-mach", label: { vi: "Sức khỏe tim mạch", en: "Cardiovascular Health", zh: "心血管健康" } },
+  { id: "tieu-hoa", label: { vi: "Hệ tiêu hóa", en: "Digestive System", zh: "消化系统" } },
+  { id: "xuong-khop", label: { vi: "Xương khớp", en: "Bones & Joints", zh: "骨骼与关节" } },
+  { id: "than-kinh", label: { vi: "Thần kinh & Giấc ngủ", en: "Nervous System & Sleep", zh: "神经系统与睡眠" } },
+  { id: "de-khang", label: { vi: "Tăng đề kháng", en: "Immunity Boosting", zh: "增强免疫力" } },
+  { id: "da-lieu", label: { vi: "Làm đẹp & Da liễu", en: "Beauty & Dermatology", zh: "美容与皮肤科" } },
+  { id: "nam-gioi", label: { vi: "Sức khỏe nam giới", en: "Men's Health", zh: "男性健康" } },
+  { id: "phu-nu", label: { vi: "Sức khỏe phụ nữ", en: "Women's Health", zh: "女性健康" } },
+  { id: "khac", label: { vi: "Khác", en: "Other", zh: "其他" } },
 ];
 
 export default function ConsultationPage() {
@@ -124,7 +160,7 @@ export default function ConsultationPage() {
       });
       setIsSubmitted(true);
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "Dat lich that bai");
+      setError(submitError instanceof Error ? submitError.message : t("appointment.failed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -141,32 +177,34 @@ export default function ConsultationPage() {
               <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle className="w-10 h-10 text-primary" />
               </div>
-              <h2 className="text-2xl font-bold mb-4">Dat lich thanh cong!</h2>
+              <h2 className="text-2xl font-bold mb-4">{t("appointment.success")}</h2>
               <p className="text-muted-foreground mb-6">
-                Chung toi da nhan duoc yeu cau tu van cua ban. Doi ngu chuyen gia se lien
-                he xac nhan lich hen trong vong 24 gio.
+                {t("appointment.success_message")}
               </p>
               <div className="bg-muted/50 rounded-lg p-4 mb-6 text-left">
-                <h3 className="font-semibold mb-3">Thong tin lich hen:</h3>
+                <h3 className="font-semibold mb-3">{t("appointment.info")}</h3>
                 <div className="space-y-2 text-sm">
                   <p>
-                    <span className="text-muted-foreground">Hinh thuc:</span>{" "}
-                    {consultationTypes.find((c) => c.id === formData.consultationType)?.title}
+                    <span className="text-muted-foreground">{t("appointment.type")}</span>{" "}
+                    {consultationTypes.find((c) => c.id === formData.consultationType)?.title[language]}
                   </p>
                   {selectedDoctor && (
                     <p>
-                      <span className="text-muted-foreground">Chuyen gia:</span>{" "}
+                      <span className="text-muted-foreground">{t("appointment.doctor")}</span>{" "}
                       {selectedDoctor.name}
                     </p>
                   )}
                   <p>
-                    <span className="text-muted-foreground">Ngay:</span> {formData.date}
+                    <span className="text-muted-foreground">{t("appointment.date")}</span>{" "}
+                    {formData.date}
                   </p>
                   <p>
-                    <span className="text-muted-foreground">Gio:</span> {formData.time}
+                    <span className="text-muted-foreground">{t("appointment.time")}</span>{" "}
+                    {formData.time}
                   </p>
                   <p>
-                    <span className="text-muted-foreground">Chu de:</span> {formData.topic}
+                    <span className="text-muted-foreground">{t("appointment.topic")}</span>{" "}
+                    {formData.topic}
                   </p>
                 </div>
               </div>
@@ -189,10 +227,10 @@ export default function ConsultationPage() {
                     });
                   }}
                 >
-                  Dat lich moi
+                  {t("appointment.new")}
                 </Button>
                 <Button asChild>
-                  <a href="/">Ve trang chu</a>
+                  <a href="/">{t("home")}</a>
                 </Button>
               </div>
             </CardContent>
@@ -213,10 +251,9 @@ export default function ConsultationPage() {
         />
 
         <div className="mt-6 mb-8 text-center max-w-3xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Dat lich tu van</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{t("appointment.title")}</h1>
           <p className="text-lg text-muted-foreground">
-            Duoc tu van truc tiep voi doi ngu y si, duoc si giau kinh nghiem ve cac van de
-            suc khoe cua ban
+            {t("appointment.description")}
           </p>
         </div>
 
@@ -260,7 +297,7 @@ export default function ConsultationPage() {
               {step === 1 && (
                 <div className="space-y-6">
                   <CardHeader className="p-0">
-                    <CardTitle>Chon hinh thuc tu van</CardTitle>
+                    <CardTitle>{t("appointment.type_title")}</CardTitle>
                   </CardHeader>
 
                   <RadioGroup
@@ -282,28 +319,28 @@ export default function ConsultationPage() {
                       >
                         <RadioGroupItem value={type.id} id={type.id} className="hidden" />
                         <type.icon className="w-8 h-8 text-primary mb-3" />
-                        <h3 className="font-semibold mb-1">{type.title}</h3>
+                        <h3 className="font-semibold mb-1">{type.title[language]}</h3>
                         <p className="text-sm text-muted-foreground mb-2">
-                          {type.description}
+                          {type.description[language]}
                         </p>
-                        <Badge variant="secondary">{type.duration}</Badge>
+                        <Badge variant="secondary">{type.duration[language]}</Badge>
                       </Label>
                     ))}
                   </RadioGroup>
 
                   <div className="space-y-4">
-                    <Label>Chon chu de suc khoe</Label>
+                    <Label>{t("appointment.topic_label")}</Label>
                     <Select
                       value={formData.topic}
                       onValueChange={(value) => setFormData({ ...formData, topic: value })}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Chon chu de ban quan tam" />
+                        <SelectValue placeholder={t("appointment.topic_placeholder")} />
                       </SelectTrigger>
                       <SelectContent>
                         {healthTopics.map((topic) => (
-                          <SelectItem key={topic} value={topic}>
-                            {topic}
+                          <SelectItem key={topic.id} value={topic.label[language]}>
+                            {topic.label[language]}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -316,7 +353,7 @@ export default function ConsultationPage() {
                       onClick={() => setStep(2)}
                       disabled={!formData.topic}
                     >
-                      Tiep tuc
+                      {t("appointment.next")}
                     </Button>
                   </div>
                 </div>
@@ -326,11 +363,11 @@ export default function ConsultationPage() {
               {step === 2 && (
                 <div className="space-y-6">
                   <CardHeader className="p-0">
-                    <CardTitle>Chon chuyen gia va thoi gian</CardTitle>
+                    <CardTitle>{t("appointment.doctor_time_title")}</CardTitle>
                   </CardHeader>
 
                   <div>
-                    <Label className="mb-3 block">Chon chuyen gia (khong bat buoc)</Label>
+                    <Label className="mb-3 block">{t("appointment.doctor_label")}</Label>
                     <div className="grid sm:grid-cols-2 gap-4">
                       {doctors.slice(0, 4).map((doctor) => (
                         <div
@@ -368,13 +405,13 @@ export default function ConsultationPage() {
                       className="mt-2"
                       onClick={() => setFormData({ ...formData, doctorId: "" })}
                     >
-                      De he thong sap xep chuyen gia
+                      {t("appointment.assign_doctor")}
                     </Button>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="date">Chon ngay *</Label>
+                      <Label htmlFor="date">{t("appointment.choose_date")}</Label>
                       <Input
                         id="date"
                         type="date"
@@ -387,7 +424,7 @@ export default function ConsultationPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Chon gio *</Label>
+                      <Label>{t("appointment.choose_time")}</Label>
                       <Select
                         value={formData.time}
                         onValueChange={(value) =>
@@ -395,7 +432,7 @@ export default function ConsultationPage() {
                         }
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Chon khung gio" />
+                          <SelectValue placeholder={t("appointment.time_placeholder")} />
                         </SelectTrigger>
                         <SelectContent>
                           {timeSlots.map((slot) => (
@@ -410,14 +447,14 @@ export default function ConsultationPage() {
 
                   <div className="flex justify-between">
                     <Button type="button" variant="outline" onClick={() => setStep(1)}>
-                      Quay lai
+                      {t("appointment.back")}
                     </Button>
                     <Button
                       type="button"
                       onClick={() => setStep(3)}
                       disabled={!formData.date || !formData.time}
                     >
-                      Tiep tuc
+                      {t("appointment.next")}
                     </Button>
                   </div>
                 </div>
@@ -427,15 +464,15 @@ export default function ConsultationPage() {
               {step === 3 && (
                 <div className="space-y-6">
                   <CardHeader className="p-0">
-                    <CardTitle>Thong tin lien he</CardTitle>
+                    <CardTitle>{t("appointment.contact_info_title")}</CardTitle>
                   </CardHeader>
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Ho va ten *</Label>
+                      <Label htmlFor="name">{t("appointment.full_name")}</Label>
                       <Input
                         id="name"
-                        placeholder="Nguyen Van A"
+                        placeholder={t("appointment.name_placeholder")}
                         value={formData.name}
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
@@ -444,7 +481,7 @@ export default function ConsultationPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">So dien thoai *</Label>
+                      <Label htmlFor="phone">{t("appointment.phone")}</Label>
                       <Input
                         id="phone"
                         type="tel"
@@ -459,7 +496,7 @@ export default function ConsultationPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t("appointment.email")}</Label>
                     <Input
                       id="email"
                       type="email"
@@ -473,11 +510,11 @@ export default function ConsultationPage() {
 
                   <div className="space-y-2">
                     <Label htmlFor="description">
-                      Mo ta van de suc khoe (khong bat buoc)
+                      {t("appointment.description")}
                     </Label>
                     <Textarea
                       id="description"
-                      placeholder="Mo ta chi tiet tinh trang suc khoe de chuyen gia co the chuan bi tot hon..."
+                      placeholder={t("appointment.description_placeholder")}
                       rows={4}
                       value={formData.description}
                       onChange={(e) =>
@@ -488,43 +525,43 @@ export default function ConsultationPage() {
 
                   {/* Summary */}
                   <div className="bg-muted/50 rounded-lg p-4">
-                    <h4 className="font-semibold mb-3">Xac nhan thong tin:</h4>
+                    <h4 className="font-semibold mb-3">{t("appointment.confirm_info")}</h4>
                     <div className="grid sm:grid-cols-2 gap-2 text-sm">
                       <p>
-                        <span className="text-muted-foreground">Hinh thuc:</span>{" "}
-                        {consultationTypes.find((c) => c.id === formData.consultationType)?.title}
+                        <span className="text-muted-foreground">{t("appointment.method")}</span>{" "}
+                        {consultationTypes.find((c) => c.id === formData.consultationType)?.title[language]}
                       </p>
                       <p>
-                        <span className="text-muted-foreground">Chu de:</span>{" "}
+                        <span className="text-muted-foreground">{t("appointment.topic")}</span>{" "}
                         {formData.topic}
                       </p>
                       {selectedDoctor && (
                         <p>
-                          <span className="text-muted-foreground">Chuyen gia:</span>{" "}
+                          <span className="text-muted-foreground">{t("appointment.doctor")}</span>{" "}
                           {selectedDoctor.name}
                         </p>
                       )}
                       <p>
-                        <span className="text-muted-foreground">Ngay:</span> {formData.date}
+                        <span className="text-muted-foreground">{t("appointment.date")}</span> {formData.date}
                       </p>
                       <p>
-                        <span className="text-muted-foreground">Gio:</span> {formData.time}
+                        <span className="text-muted-foreground">{t("appointment.time")}</span> {formData.time}
                       </p>
                     </div>
                   </div>
 
                   <div className="flex justify-between">
                     <Button type="button" variant="outline" onClick={() => setStep(2)}>
-                      Quay lai
+                      {t("appointment.back")}
                     </Button>
                     <Button type="submit" disabled={isSubmitting || !formData.name || !formData.phone}>
                       {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Dang xu ly...
+                          {t("appointment.submitting")}
                         </>
                       ) : (
-                        "Xac nhan dat lich"
+                        t("appointment.submit")
                       )}
                     </Button>
                   </div>
@@ -537,33 +574,33 @@ export default function ConsultationPage() {
         {/* Why choose us */}
         <div className="mt-12 max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold text-center mb-8">
-            Tai sao nen tu van tai An Gia Green?
+            {t("appointment.why_choose_us")}
           </h2>
           <div className="grid sm:grid-cols-3 gap-6">
             <Card className="text-center">
               <CardContent className="p-6">
                 <Stethoscope className="w-10 h-10 text-primary mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">Chuyen gia uy tin</h3>
+                <h3 className="font-semibold mb-2">{t("appointment.expert")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Doi ngu y si, duoc si voi hon 10 nam kinh nghiem
+                  {t("appointment.expert_description")}
                 </p>
               </CardContent>
             </Card>
             <Card className="text-center">
               <CardContent className="p-6">
                 <Award className="w-10 h-10 text-primary mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">Tu van mien phi</h3>
+                <h3 className="font-semibold mb-2">{t("appointment.free")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Hoan toan mien phi, khong phat sinh chi phi an
+                  {t("appointment.free_description")}
                 </p>
               </CardContent>
             </Card>
             <Card className="text-center">
               <CardContent className="p-6">
                 <User className="w-10 h-10 text-primary mx-auto mb-4" />
-                <h3 className="font-semibold mb-2">Bao mat thong tin</h3>
+                <h3 className="font-semibold mb-2">{t("appointment.privacy")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Thong tin suc khoe duoc bao mat tuyet doi
+                  {t("appointment.privacy_description")}
                 </p>
               </CardContent>
             </Card>

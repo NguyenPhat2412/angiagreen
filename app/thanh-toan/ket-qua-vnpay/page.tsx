@@ -3,12 +3,12 @@
 import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { useLanguage } from '@/lib/language-context'
+import { useLanguage } from '@/context/language-context'
 import { paymentServices } from '@/services/paymentApi'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { CheckCircle2, XCircle, Loader2, Package, Phone, ArrowRight } from 'lucide-react'
-import { formatPrice } from '@/lib/data'
+import { formatPrice } from '@/language/data'
 
 function VNPayResultContent() {
   const { language } = useLanguage()

@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useLanguage } from '@/lib/language-context'
+import { useLanguage } from '@/context/language-context'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Star, Video, Building, Clock } from 'lucide-react'
-import type { Doctor } from '@/lib/types'
+import type { Doctor } from '@/interface/types'
 
 interface DoctorCardProps {
   doctor: Doctor

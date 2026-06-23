@@ -3,13 +3,13 @@
 import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { useLanguage } from '@/lib/language-context'
-import { useAuth } from '@/lib/auth-context'
+import { useLanguage } from '@/context/language-context'
+import { useAuth } from '@/context/auth-context'
 import { paymentServices } from '@/services/paymentApi'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { CheckCircle2, XCircle, Loader2, Phone, ArrowRight, Award } from 'lucide-react'
-import { formatPrice } from '@/lib/data'
+import { formatPrice } from '@/language/data'
 
 function MembershipVNPayResultContent() {
   const { language } = useLanguage()

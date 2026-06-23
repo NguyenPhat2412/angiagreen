@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
-import { LanguageProvider } from '@/lib/language-context'
-import { CartProvider } from '@/lib/cart-context'
-import { AuthProvider } from '@/lib/auth-context'
+import { LanguageProvider } from '@/context/language-context'
+import { CartProvider } from '@/context/cart-context'
+import { AuthProvider } from '@/context/auth-context'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import FloatingContactButtons from '@/components/layout/FloatingContactButtons'
+import { DynamicNotificationToast } from '@/components/layout/DynamicNotificationToast'
 import './globals.css'
 
 const _geist = Geist({ subsets: ['latin'] })
@@ -63,6 +64,7 @@ export default function RootLayout({
               <main className="flex-1">{children}</main>
               <Footer />
               <FloatingContactButtons />
+              <DynamicNotificationToast />
             </CartProvider>
           </AuthProvider>
         </LanguageProvider>

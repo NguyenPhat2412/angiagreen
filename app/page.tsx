@@ -1,6 +1,6 @@
 'use client'
 
-import { useLanguage } from '@/lib/language-context'
+import { useLanguage } from '@/context/language-context'
 import { HeroSection } from '@/components/pages/home/HeroSection/HeroSection'
 import { SloganBanner } from '@/components/pages/home/SloganBanner/SloganBanner'
 import { MembershipSection } from '@/components/pages/home/MembershipSection/MembershipSection'

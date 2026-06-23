@@ -21,6 +21,7 @@ interface InfoPageShellProps {
   highlights?: Array<{ label: string; value: string }>;
   icon?: LucideIcon;
   title: string;
+  imageUrl?: string;
 }
 
 export function InfoPageShell({
@@ -32,6 +33,7 @@ export function InfoPageShell({
   highlights = [],
   icon: Icon,
   title,
+  imageUrl,
 }: InfoPageShellProps) {
   return (
     <main className="min-h-screen bg-muted/30">
@@ -84,7 +86,14 @@ export function InfoPageShell({
         </div>
       </section>
 
-      <div className="container mx-auto px-4 py-10">{children}</div>
+      <div className="container mx-auto px-4 py-10">
+        {imageUrl && (
+          <div className="relative w-full h-[240px] sm:h-[320px] md:h-[380px] rounded-2xl overflow-hidden mb-8 shadow-md border border-primary/10">
+            <img src={imageUrl} alt={title} className="object-cover w-full h-full" />
+          </div>
+        )}
+        {children}
+      </div>
     </main>
   );
 }

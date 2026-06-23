@@ -1,4 +1,4 @@
-import type { Language } from "@/lib/types";
+import type { Language } from "@/interface/types";
 import type { AboutStat } from "@/components/pages/gioi-thieu/types";
 
 interface AboutStatsSectionProps {

@@ -8,13 +8,13 @@ import { Building, CalendarCheck, Clock, Star, Video } from "lucide-react";
 import Breadcrumb from "@/components/Breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { doctorServices } from "@/services/doctorApi";
-import type { Doctor } from "@/lib/types";
+import type { Doctor } from "@/interface/types";
 
 export default function MedicalConsultantDetailPage() {
   const params = useParams();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [doctor, setDoctor] = useState<Doctor | null>();
   const doctorId = Array.isArray(params.id) ? params.id[0] : params.id;
 
@@ -34,9 +34,9 @@ export default function MedicalConsultantDetailPage() {
     return (
       <main className="min-h-screen bg-muted/30">
         <div className="container mx-auto px-4 py-16 text-center">
-          <p className="text-muted-foreground">Không tìm thấy chuyên gia.</p>
+          <p className="text-muted-foreground">{t("appointment.doctor_not_found")}</p>
           <Button className="mt-4" asChild>
-            <Link href="/tu-van-y-si">Quay lại danh sách</Link>
+            <Link href="/tu-van-y-si">{t("appointment.back_to_list")}</Link>
           </Button>
         </div>
       </main>
@@ -48,7 +48,7 @@ export default function MedicalConsultantDetailPage() {
       <div className="container mx-auto px-4 py-8">
         <Breadcrumb
           items={[
-            { label: "Tư vấn cùng y sĩ", href: "/tu-van-y-si" },
+            { label: t("consultDoctor"), href: "/tu-van-y-si" },
             { label: doctor.name },
           ]}
         />
@@ -69,7 +69,7 @@ export default function MedicalConsultantDetailPage() {
               <Button className="w-full" asChild>
                 <Link href={`/tu-van?doctorId=${doctor.id}`}>
                   <CalendarCheck className="mr-2 h-4 w-4" />
-                  Đặt lịch tư vấn
+                  {t("appointment.book")}
                 </Link>
               </Button>
             </CardContent>
@@ -84,7 +84,7 @@ export default function MedicalConsultantDetailPage() {
                 <div className="mt-5 flex flex-wrap gap-3 text-sm">
                   <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-primary">
                     <Clock className="h-4 w-4" />
-                    {doctor.experience}+ năm kinh nghiệm
+                    {doctor.experience} + {t("appointment.year_experience")}
                   </span>
                   {doctor.rating && (
                     <span className="inline-flex items-center gap-2 rounded-full bg-yellow-100 px-3 py-1 text-yellow-700">
@@ -95,13 +95,13 @@ export default function MedicalConsultantDetailPage() {
                   {doctor.consultationType.includes("online") && (
                     <span className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-blue-600">
                       <Video className="h-4 w-4" />
-                      Online
+                      {t("online")}
                     </span>
                   )}
                   {doctor.consultationType.includes("offline") && (
                     <span className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-emerald-600">
                       <Building className="h-4 w-4" />
-                      Tại phòng khám
+                      {t("atClinic")}
                     </span>
                   )}
                 </div>
@@ -110,9 +110,9 @@ export default function MedicalConsultantDetailPage() {
 
             <div className="grid gap-6 md:grid-cols-3">
               {[
-                { title: "Tư vấn sản phẩm", text: "Hướng dẫn lựa chọn sản phẩm phù hợp với thể trạng." },
-                { title: "Theo dõi lịch hẹn", text: doctor.nextAvailable ? `Lịch gần nhất: ${doctor.nextAvailable}` : "Linh hoạt theo lịch đặt hẹn của khách hàng." },
-                { title: "Đồng hành lâu dài", text: "Gợi ý lộ trình chăm sóc sức khỏe và cách sử dụng thảo dược an toàn." },
+                { title: t("prodConsult"), text: t("prodConsultText") },
+                { title: t("apptTrack"), text: doctor.nextAvailable ? `${t("nextAppt")}${doctor.nextAvailable}` : t("apptTrackText") },
+                { title: t("longTermCompanion"), text: t("longTermText") },
               ].map((item) => (
                 <Card key={item.title}>
                   <CardContent className="p-5">

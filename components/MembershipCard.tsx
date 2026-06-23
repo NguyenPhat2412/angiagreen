@@ -2,12 +2,12 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useLanguage } from '@/lib/language-context'
-import { formatPrice } from '@/lib/data'
+import { useLanguage } from '@/context/language-context'
+import { formatPrice } from '@/language/data'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Check, Crown } from 'lucide-react'
-import type { MembershipPackage } from '@/lib/types'
+import type { MembershipPackage } from '@/interface/types'
 
 interface MembershipCardProps {
   package_: MembershipPackage

@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useLanguage } from '@/lib/language-context'
-import { useCart } from '@/lib/cart-context'
-import { formatPrice } from '@/lib/data'
+import { useLanguage } from '@/context/language-context'
+import { useCart } from '@/context/cart-context'
+import { formatPrice } from '@/language/data'
 import { categoryServices } from '@/services/categoryApi'
 import { productServices } from '@/services/productApi'
 import { ProductCard } from '@/components/ProductCard'
@@ -37,7 +37,7 @@ import {
   Building,
   Headphones,
 } from 'lucide-react'
-import type { Category, Product } from '@/lib/types'
+import type { Category, Product } from '@/interface/types'
 
 export default function ProductDetailPage() {
   const { slug } = useParams()

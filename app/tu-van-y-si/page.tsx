@@ -11,13 +11,13 @@ import {
 } from "@/components/pages/shared/contentHelpers";
 import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { doctorServices } from "@/services/doctorApi";
 import { contentServices } from "@/services/contentApi";
-import type { ContentPage, Doctor } from "@/lib/types";
+import type { ContentPage, Doctor } from "@/interface/types";
 
 export default function MedicalConsultantsPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [page, setPage] = useState<ContentPage | null>();
 
@@ -57,27 +57,32 @@ export default function MedicalConsultantsPage() {
   return (
     <InfoPageShell
       badge={page?.badge || "Medical Consultation"}
+      imageUrl={page?.imageUrl}
       breadcrumbs={[
-        { label: "Trang chủ", href: "/" },
-        { label: "Tư vấn cùng y sĩ" },
+        { label: t("home"), href: "/" },
+        { label: t("consultDoctor") },
       ]}
       description={
         page
           ? localizedText(page.description, language)
+          : language === "en"
+          ? "Connect with a team of doctors, pharmacists, and healthcare experts for product usage guidance and booking suitable consultations."
+          : language === "zh"
+          ? "联系医生、药剂师和医疗保健专家团队，获取产品使用指导并预约合适的咨询。"
           : "Kết nối với đội ngũ y sĩ, dược sĩ và chuyên gia chăm sóc sức khỏe để được hướng dẫn dùng sản phẩm và đặt lịch tư vấn phù hợp."
       }
       highlights={[
-        { label: highlights[0]?.label || "Chuyên gia hiện có", value: `${doctors.length}` },
-        ...(highlights.length > 1 ? highlights.slice(1) : [{ label: "Hình thức tư vấn", value: "3" }]),
+        { label: highlights[0]?.label || t("availableExperts"), value: `${doctors.length}` },
+        ...(highlights.length > 1 ? highlights.slice(1) : [{ label: t("consultationTypes"), value: "3" }]),
       ]}
       icon={Icon}
-      title={page ? localizedText(page.title, language) : "Tư vấn cùng y sĩ"}
+      title={page ? localizedText(page.title, language) : t("consultDoctor")}
       actions={
         page?.actions?.length
           ? mapContentActions(page.actions, language)
           : [
-              { href: "/tu-van", label: "Đặt lịch tư vấn" },
-              { href: "/chuyen-gia", label: "Xem đội ngũ", variant: "outline" },
+              { href: "/tu-van", label: language === "en" ? "Book Consultation" : language === "zh" ? "预约咨询" : "Đặt lịch tư vấn" },
+              { href: "/chuyen-gia", label: language === "en" ? "View Team" : language === "zh" ? "查看团队" : "Xem đội ngũ", variant: "outline" },
             ]
       }
     >
@@ -102,9 +107,9 @@ export default function MedicalConsultantsPage() {
 
       <section className="mt-10">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold">Đội ngũ tư vấn</h2>
+          <h2 className="text-2xl font-bold">{t("consultantTeam")}</h2>
           <p className="mt-2 text-muted-foreground">
-            Chọn một chuyên gia để xem chi tiết và đặt lịch phù hợp.
+            {t("consultantTeamSub")}
           </p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

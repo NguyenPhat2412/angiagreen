@@ -5,9 +5,10 @@ import { CreditCard, Landmark, Plus, Truck } from "lucide-react";
 import { AccountFeaturePage } from "@/components/pages/shared/AccountFeaturePage/AccountFeaturePage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAuth } from "@/lib/auth-context";
-import type { PaymentMethod } from "@/lib/types";
+import { useAuth } from "@/context/auth-context";
+import type { PaymentMethod } from "@/interface/types";
 import { userServices } from "@/services/userApi";
+import { useLanguage } from "@/context/language-context";
 
 const paymentMethodIcons = {
   cod: Truck,
@@ -18,6 +19,7 @@ const paymentMethodIcons = {
 
 export default function AccountPaymentMethodsPage() {
   const { isLoggedIn } = useAuth();
+  const { t } = useLanguage();
   const [methods, setMethods] = useState<PaymentMethod[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -91,7 +93,7 @@ export default function AccountPaymentMethodsPage() {
           <CardContent className="p-10 text-center">
             <CreditCard className="mx-auto mb-4 h-14 w-14 text-muted-foreground" />
             <h2 className="text-xl font-semibold">
-              {isLoaded ? "Chưa có phương thức thanh toán" : "Đang tải phương thức thanh toán"}
+              {isLoaded ? "Chưa có phương thức thanh toán" : t("loadingPayment")}
             </h2>
             <p className="mt-2 text-muted-foreground">
               Các phương thức thanh toán đã lưu sẽ được quản lý thông qua backend tài khoản.

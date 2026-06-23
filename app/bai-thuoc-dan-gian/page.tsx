@@ -12,13 +12,13 @@ import {
 import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useLanguage } from "@/lib/language-context";
-import type { Article, ContentPage } from "@/lib/types";
+import { useLanguage } from "@/context/language-context";
+import type { Article, ContentPage } from "@/interface/types";
 import { articleServices } from "@/services/articleApi";
 import { contentServices } from "@/services/contentApi";
 
 export default function FolkRemediesPage() {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [articles, setArticles] = useState<Article[]>([]);
   const [page, setPage] = useState<ContentPage | null>();
   const [search, setSearch] = useState("");
@@ -85,27 +85,32 @@ export default function FolkRemediesPage() {
   return (
     <InfoPageShell
       badge={page?.badge || "Folk Remedies"}
+      imageUrl={page?.imageUrl}
       breadcrumbs={[
-        { label: "Trang chủ", href: "/" },
-        { label: "Bài thuốc dân gian" },
+        { label: t("home"), href: "/" },
+        { label: t("folkRemedies") },
       ]}
       description={
         page
           ? localizedText(page.description, language)
+          : language === "en"
+          ? "Compilation of herbal knowledge and folk remedies compiled to be easy to read, easy to apply, and always recommended to consult experts when needed."
+          : language === "zh"
+          ? "汇编草药知识和民间药方，易于阅读、易于应用，并始终建议在需要时咨询专家。"
           : "Tổng hợp kiến thức thảo dược và bài thuốc dân gian được biên soạn theo hướng dễ đọc, dễ áp dụng và luôn khuyến nghị tham vấn chuyên gia khi cần."
       }
       highlights={[
-        { label: highlights[0]?.label || "Bài viết tham khảo", value: `${filteredArticles.length}` },
-        ...(highlights.length > 1 ? highlights.slice(1) : [{ label: "Chủ đề sức khỏe", value: "8+" }]),
+        { label: highlights[0]?.label || t("referenceArticles"), value: `${filteredArticles.length}` },
+        ...(highlights.length > 1 ? highlights.slice(1) : [{ label: t("healthTopics"), value: "8+" }]),
       ]}
       icon={Icon}
-      title={page ? localizedText(page.title, language) : "Bài thuốc dân gian"}
+      title={page ? localizedText(page.title, language) : t("folkRemedies")}
       actions={
         page?.actions?.length
           ? mapContentActions(page.actions, language)
           : [
-              { href: "/tu-van", label: "Hỏi chuyên gia" },
-              { href: "/tin-tuc", label: "Tin tức sức khỏe", variant: "outline" },
+              { href: "/tu-van", label: language === "en" ? "Ask Expert" : language === "zh" ? "咨询专家" : "Hỏi chuyên gia" },
+              { href: "/tin-tuc", label: language === "en" ? "Health News" : language === "zh" ? "健康新闻" : "Tin tức sức khỏe", variant: "outline" },
             ]
       }
     >
@@ -131,15 +136,15 @@ export default function FolkRemediesPage() {
       <section className="mt-10">
         <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <h2 className="text-2xl font-bold">Thư viện bài viết</h2>
-            <p className="mt-2 text-muted-foreground">Tìm theo tên bài viết, công dụng hoặc tag thảo dược.</p>
+            <h2 className="text-2xl font-bold">{t("articleLibrary")}</h2>
+            <p className="mt-2 text-muted-foreground">{t("articleLibrarySub")}</p>
           </div>
           <div className="relative w-full md:w-80">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Tìm bài thuốc..."
+              placeholder={t("searchRemedy")}
               className="pl-10"
             />
           </div>

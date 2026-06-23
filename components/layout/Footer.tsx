@@ -1,7 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
-import { useLanguage } from '@/lib/language-context'
+import { toast } from 'sonner'
+import { useLanguage } from '@/context/language-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -11,10 +13,22 @@ import {
   Facebook,
   Youtube,
   Send,
+  Gift,
 } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
 export default function Footer() {
   const { t, language } = useLanguage()
+  const [email, setEmail] = useState('')
+  const [showWelcome, setShowWelcome] = useState(false)
+  const [subscribedEmail, setSubscribedEmail] = useState('')
 
   const aboutLinks = [
     { label: { vi: 'Giới thiệu', en: 'About Us', zh: '关于我们' }, href: '/gioi-thieu' },
@@ -34,10 +48,34 @@ export default function Footer() {
 
   const supportLinks = [
     { label: { vi: 'Hướng dẫn mua hàng', en: 'Shopping Guide', zh: '购物指南' }, href: '/ho-tro/huong-dan-mua-hang' },
-    { label: { vi: 'Theo dõi đơn hàng', en: 'Track Order', zh: '订单追踪' }, href: '/tai-khoan/don-hang' },
+    { label: { vi: 'Theo dõi đơn hàng', en: 'Track Order', zh: '订单追蹤' }, href: '/tai-khoan/don-hang' },
     { label: { vi: 'Câu hỏi thường gặp', en: 'FAQ', zh: '常见问题' }, href: '/ho-tro/faq' },
     { label: { vi: 'Liên hệ hỗ trợ', en: 'Contact Support', zh: '联系支持' }, href: '/lien-he' },
   ]
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email || !email.includes('@')) {
+      toast.error(
+        language === 'vi' 
+          ? 'Vui lòng nhập email hợp lệ.' 
+          : language === 'en' 
+          ? 'Please enter a valid email.' 
+          : '请输入有效的电子邮件。'
+      )
+      return
+    }
+    setSubscribedEmail(email)
+    setShowWelcome(true)
+    toast.success(
+      language === 'vi' 
+        ? 'Đăng ký nhận tin thành công! Cảm ơn bạn.' 
+        : language === 'en' 
+        ? 'Subscribed successfully! Thank you.' 
+        : '订阅成功！谢谢您。'
+    )
+    setEmail('')
+  }
 
   return (
     <footer className="bg-[#2F7D32] text-white">
@@ -65,41 +103,46 @@ export default function Footer() {
             {/* Newsletter */}
             <div className="mb-6">
               <p className="font-medium mb-2">{t('newsletter')}</p>
-              <div className="flex gap-2">
+              <form onSubmit={handleSubscribe} className="flex gap-2">
                 <Input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder={t('newsletterPlaceholder')}
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/50 flex-1"
                 />
-                <Button className="bg-[#4FAE4E] hover:bg-[#7BC96F] text-white">
+                <Button type="submit" className="bg-[#4FAE4E] hover:bg-[#7BC96F] text-white">
                   <Send className="w-4 h-4" />
                 </Button>
-              </div>
+              </form>
             </div>
 
             {/* Social links */}
             <div className="flex gap-3">
               <a
-                href="https://facebook.com"
+                href="https://facebook.com/angiagreen.mock"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                aria-label="Facebook Link"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="https://youtube.com"
+                href="https://youtube.com/angiagreen.mock"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                aria-label="YouTube Link"
               >
                 <Youtube className="w-5 h-5" />
               </a>
               <a
-                href="https://zalo.me"
+                href="https://zalo.me/0987654321"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                aria-label="Zalo Link"
               >
                 <span className="text-xs font-bold">Zalo</span>
               </a>
@@ -143,7 +186,7 @@ export default function Footer() {
           {/* Contact column */}
           <div>
             <h3 className="font-semibold text-lg mb-4">{t('contactInfo')}</h3>
-            <ul className="space-y-3">
+            <ul className="space-y-3 font-sans">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[#7BC96F] shrink-0 mt-0.5" />
                 <span className="text-sm text-white/80">
@@ -168,12 +211,22 @@ export default function Footer() {
                 {language === 'zh' && '下载应用'}
               </p>
               <div className="flex gap-2">
-                <div className="bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2 text-xs cursor-pointer transition-colors">
+                <a
+                  href="https://www.apple.com/app-store/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2 text-xs transition-colors"
+                >
                   App Store
-                </div>
-                <div className="bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2 text-xs cursor-pointer transition-colors">
+                </a>
+                <a
+                  href="https://play.google.com/store"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white/10 hover:bg-white/20 rounded-lg px-3 py-2 text-xs transition-colors"
+                >
                   Google Play
-                </div>
+                </a>
               </div>
             </div>
           </div>
@@ -199,6 +252,44 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      {/* Welcome Subscription Dialog */}
+      <Dialog open={showWelcome} onOpenChange={setShowWelcome}>
+        <DialogContent className="max-w-md bg-white text-slate-800 rounded-2xl border border-emerald-500/20 shadow-2xl p-6">
+          <DialogHeader className="flex flex-col items-center text-center">
+            <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2 shadow-inner">
+              <Gift className="w-8 h-8 animate-bounce text-emerald-600" />
+            </div>
+            <DialogTitle className="text-xl font-bold text-[#2F7D32]">
+              {t('welcomeTitle')}
+            </DialogTitle>
+            <DialogDescription className="text-sm mt-1 text-slate-500 font-sans">
+              {language === 'vi' && `Hệ thống đã gửi thư xác nhận đến: ${subscribedEmail}`}
+              {language === 'en' && `We have sent a verification email to: ${subscribedEmail}`}
+              {language === 'zh' && `系统已向您发送确认邮件：${subscribedEmail}`}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="my-4 bg-emerald-50/50 rounded-xl p-4 border border-emerald-100 font-sans">
+            <p className="text-sm leading-relaxed text-slate-700">
+              {t('welcomeText')}
+            </p>
+            <div className="mt-4 flex flex-col items-center bg-white p-3 rounded-lg border border-dashed border-emerald-300">
+              <span className="text-xs uppercase tracking-wider text-slate-400 font-semibold">{t('discountCode')}</span>
+              <span className="text-2xl font-black text-[#2F7D32] tracking-widest mt-1">AGGREEN10</span>
+            </div>
+          </div>
+
+          <DialogFooter className="sm:justify-center">
+            <Button 
+              onClick={() => setShowWelcome(false)} 
+              className="bg-[#2F7D32] hover:bg-[#1E5620] text-white rounded-full px-6 py-2 w-full font-semibold transition-all shadow-md"
+            >
+              {t('startBrowsing')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </footer>
   )
 }

@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useLanguage } from '@/lib/language-context'
+import { useLanguage } from '@/context/language-context'
 import { Card, CardContent } from '@/components/ui/card'
 import { Calendar, User, ArrowRight } from 'lucide-react'
-import type { Article } from '@/lib/types'
+import type { Article } from '@/interface/types'
 
 interface ArticleCardProps {
   article: Article

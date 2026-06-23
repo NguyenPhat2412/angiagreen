@@ -23,42 +23,58 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import Breadcrumb from "@/components/Breadcrumb";
 
 const contactInfo = [
   {
     icon: MapPin,
-    title: "Dia chi",
-    details: ["123 Nguyen Hue, Quan 1", "TP. Ho Chi Minh, Viet Nam"],
+    title: { vi: "Địa chỉ", en: "Address", zh: "地址" },
+    details: {
+      vi: ["123 Nguyễn Huệ, Quận 1", "TP. Hồ Chí Minh, Việt Nam"],
+      en: ["123 Nguyen Hue, District 1", "Ho Chi Minh City, Vietnam"],
+      zh: ["阮惠街123号，第一区", "胡志明市，越南"],
+    },
   },
   {
     icon: Phone,
-    title: "Dien thoai",
-    details: ["Hotline: 1800 1234", "Tu van: 0901 234 567"],
+    title: { vi: "Điện thoại", en: "Phone", zh: "电话" },
+    details: {
+      vi: ["Hotline: 1800 1234", "Tư vấn: 0901 234 567"],
+      en: ["Hotline: 1800 1234", "Consultation: 0901 234 567"],
+      zh: ["热线：1800 1234", "咨询：0901 234 567"],
+    },
   },
   {
     icon: Mail,
-    title: "Email",
-    details: ["info@angiagreen.vn", "support@angiagreen.vn"],
+    title: { vi: "Email", en: "Email", zh: "电子邮箱" },
+    details: {
+      vi: ["info@angiagreen.vn", "support@angiagreen.vn"],
+      en: ["info@angiagreen.vn", "support@angiagreen.vn"],
+      zh: ["info@angiagreen.vn", "support@angiagreen.vn"],
+    },
   },
   {
     icon: Clock,
-    title: "Gio lam viec",
-    details: ["Thu 2 - Thu 6: 8:00 - 18:00", "Thu 7 - CN: 8:00 - 12:00"],
+    title: { vi: "Giờ làm việc", en: "Working Hours", zh: "工作时间" },
+    details: {
+      vi: ["Thứ 2 - Thứ 6: 8:00 - 18:00", "Thứ 7 - CN: 8:00 - 12:00"],
+      en: ["Mon - Fri: 8:00 - 18:00", "Sat - Sun: 8:00 - 12:00"],
+      zh: ["周一 - 周五: 8:00 - 18:00", "周六 - 周日: 8:00 - 12:00"],
+    },
   },
 ];
 
 const subjects = [
-  "Tu van san pham",
-  "Ho tro don hang",
-  "Gop y dich vu",
-  "Hop tac kinh doanh",
-  "Khac",
+  { id: "product", label: { vi: "Tư vấn sản phẩm", en: "Product Consultation", zh: "产品咨询" } },
+  { id: "order", label: { vi: "Hỗ trợ đơn hàng", en: "Order Support", zh: "订单支持" } },
+  { id: "feedback", label: { vi: "Góp ý dịch vụ", en: "Service Feedback", zh: "服务反馈" } },
+  { id: "cooperate", label: { vi: "Hợp tác kinh doanh", en: "Business Cooperation", zh: "商务合作" } },
+  { id: "other", label: { vi: "Khác", en: "Other", zh: "其他" } },
 ];
 
 export default function ContactPage() {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -72,10 +88,10 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
-    
+
     setIsSubmitting(false);
     setIsSubmitted(true);
   };
@@ -91,10 +107,9 @@ export default function ContactPage() {
         />
 
         <div className="mt-6 mb-8 text-center max-w-3xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Lien he voi chung toi</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{t("contactTitle")}</h1>
           <p className="text-lg text-muted-foreground">
-            Chung toi luon san sang ho tro ban. Hay de lai thong tin, chung toi se lien
-            he trong thoi gian som nhat.
+            {t("contactSubtitle")}
           </p>
         </div>
 
@@ -106,8 +121,8 @@ export default function ContactPage() {
                 <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <info.icon className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">{info.title}</h3>
-                {info.details.map((detail, i) => (
+                <h3 className="font-semibold mb-2">{info.title[language]}</h3>
+                {info.details[language].map((detail, i) => (
                   <p key={i} className="text-sm text-muted-foreground">
                     {detail}
                   </p>
@@ -123,7 +138,7 @@ export default function ContactPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageCircle className="w-5 h-5" />
-                Gui tin nhan cho chung toi
+                {t("sendMessageTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -132,18 +147,17 @@ export default function ContactPage() {
                   <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CheckCircle className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Cam on ban da lien he!</h3>
+                  <h3 className="text-xl font-semibold mb-2">{t("thankYouContact")}</h3>
                   <p className="text-muted-foreground mb-4">
-                    Chung toi da nhan duoc tin nhan cua ban va se phan hoi trong thoi gian
-                    som nhat.
+                    {t("contactSuccessDesc")}
                   </p>
-                  <Button onClick={() => setIsSubmitted(false)}>Gui tin nhan khac</Button>
+                  <Button onClick={() => setIsSubmitted(false)}>{t("sendAnotherMessage")}</Button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="name">Ho va ten *</Label>
+                      <Label htmlFor="name">{t("fullNameLabel")}</Label>
                       <Input
                         id="name"
                         placeholder="Nguyen Van A"
@@ -155,7 +169,7 @@ export default function ContactPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="phone">So dien thoai *</Label>
+                      <Label htmlFor="phone">{t("phoneLabel")}</Label>
                       <Input
                         id="phone"
                         type="tel"
@@ -170,7 +184,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="email">{t("emailLabel")}</Label>
                     <Input
                       id="email"
                       type="email"
@@ -183,7 +197,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="subject">Chu de *</Label>
+                    <Label htmlFor="subject">{t("subjectLabel")}</Label>
                     <Select
                       value={formData.subject}
                       onValueChange={(value) =>
@@ -191,12 +205,12 @@ export default function ContactPage() {
                       }
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Chon chu de" />
+                        <SelectValue placeholder={t("selectSubject")} />
                       </SelectTrigger>
                       <SelectContent>
                         {subjects.map((subject) => (
-                          <SelectItem key={subject} value={subject}>
-                            {subject}
+                          <SelectItem key={subject.id} value={subject.id}>
+                            {subject.label[language]}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -204,10 +218,10 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message">Noi dung *</Label>
+                    <Label htmlFor="message">{t("messageLabel")}</Label>
                     <Textarea
                       id="message"
-                      placeholder="Nhap noi dung tin nhan..."
+                      placeholder={t("messagePlaceholder")}
                       rows={5}
                       value={formData.message}
                       onChange={(e) =>
@@ -221,12 +235,12 @@ export default function ContactPage() {
                     {isSubmitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Dang gui...
+                        {t("sendingButton")}
                       </>
                     ) : (
                       <>
                         <Send className="mr-2 h-4 w-4" />
-                        Gui tin nhan
+                        {t("sendMessageButton")}
                       </>
                     )}
                   </Button>
@@ -240,7 +254,7 @@ export default function ContactPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="w-5 h-5" />
-                Vi tri cua hang
+                {t("storeLocation")}
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
@@ -262,24 +276,24 @@ export default function ContactPage() {
 
         {/* FAQ Section */}
         <div className="mt-12">
-          <h2 className="text-2xl font-bold text-center mb-8">Cau hoi thuong gap</h2>
+          <h2 className="text-2xl font-bold text-center mb-8">{t("faqTitle")}</h2>
           <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
             {[
               {
-                q: "Lam sao de dat hang?",
-                a: "Ban co the dat hang truc tiep tren website, goi hotline 1800 1234, hoac nhan tin qua Zalo/Messenger.",
+                q: t("faq1Q"),
+                a: t("faq1A"),
               },
               {
-                q: "Thoi gian giao hang la bao lau?",
-                a: "Don hang noi thanh TP.HCM giao trong 1-2 ngay, cac tinh thanh khac tu 3-5 ngay.",
+                q: t("faq2Q"),
+                a: t("faq2A"),
               },
               {
-                q: "Chinh sach doi tra nhu the nao?",
-                a: "Ban co the doi tra san pham trong vong 7 ngay neu san pham con nguyen seal, chua su dung.",
+                q: t("faq3Q"),
+                a: t("faq3A"),
               },
               {
-                q: "Lam sao de duoc tu van truc tiep?",
-                a: "Ban co the dat lich tu van voi y si/duoc si qua trang Tu van hoac goi 0901 234 567.",
+                q: t("faq4Q"),
+                a: t("faq4A"),
               },
             ].map((faq, index) => (
               <Card key={index}>

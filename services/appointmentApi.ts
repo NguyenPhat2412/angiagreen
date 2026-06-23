@@ -1,5 +1,5 @@
 import { api } from "@/lib/apiClient";
-import type { Appointment, PaginatedResponse } from "@/lib/types";
+import type { Appointment, PaginatedResponse } from "@/interface/types";
 import { unwrapList } from "./apiList";
 
 export type AppointmentPayload = {

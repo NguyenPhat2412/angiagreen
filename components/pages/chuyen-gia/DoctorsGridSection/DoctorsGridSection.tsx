@@ -4,7 +4,7 @@ import { Phone, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import type { Doctor, Language } from "@/lib/types";
+import type { Doctor, Language } from "@/interface/types";
 
 interface DoctorsGridSectionProps {
   doctors: Doctor[];

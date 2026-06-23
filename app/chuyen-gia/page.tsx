@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/context/language-context";
 import { doctorServices } from "@/services/doctorApi";
 import { DoctorsCtaSection } from "@/components/pages/chuyen-gia/DoctorsCtaSection/DoctorsCtaSection";
 import { DoctorsGridSection } from "@/components/pages/chuyen-gia/DoctorsGridSection/DoctorsGridSection";
 import { DoctorsHeroSection } from "@/components/pages/chuyen-gia/DoctorsHeroSection/DoctorsHeroSection";
 import { ExpertStatsSection } from "@/components/pages/chuyen-gia/ExpertStatsSection/ExpertStatsSection";
 import { WhyChooseExpertsSection } from "@/components/pages/chuyen-gia/WhyChooseExpertsSection/WhyChooseExpertsSection";
-import type { Doctor } from "@/lib/types";
+import type { Doctor } from "@/interface/types";
 
 export default function DoctorsPage() {
   const { language, t } = useLanguage();

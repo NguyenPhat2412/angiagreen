@@ -7,12 +7,14 @@ import { ProductCard } from "@/components/ProductCard";
 import { AccountFeaturePage } from "@/components/pages/shared/AccountFeaturePage/AccountFeaturePage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAuth } from "@/lib/auth-context";
-import type { Product } from "@/lib/types";
+import { useAuth } from "@/context/auth-context";
+import type { Product } from "@/interface/types";
 import { userServices } from "@/services/userApi";
+import { useLanguage } from "@/context/language-context";
 
 export default function AccountFavoritesPage() {
   const { isLoggedIn } = useAuth();
+  const { t } = useLanguage();
   const [favorites, setFavorites] = useState<Product[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -64,7 +66,7 @@ export default function AccountFavoritesPage() {
           <CardContent className="p-10 text-center">
             <Heart className="mx-auto mb-4 h-14 w-14 text-muted-foreground" />
             <h2 className="text-xl font-semibold">
-              {isLoaded ? "Danh sách yêu thích đang trống" : "Đang tải danh sách yêu thích"}
+              {isLoaded ? "Danh sách yêu thích đang trống" : t("loadingWishlist")}
             </h2>
             <p className="mt-2 text-muted-foreground">
               Sản phẩm bạn lưu từ backend sẽ hiển thị tại đây để mua lại nhanh hơn.

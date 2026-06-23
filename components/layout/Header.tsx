@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useLanguage } from '@/lib/language-context'
-import { useCart } from '@/lib/cart-context'
-import { formatPrice } from '@/lib/data'
+import { useLanguage } from '@/context/language-context'
+import { useCart } from '@/context/cart-context'
+import { formatPrice } from '@/language/data'
 import { categoryServices } from '@/services/categoryApi'
 import { productServices } from '@/services/productApi'
 import { Button } from '@/components/ui/button'
@@ -31,7 +31,7 @@ import {
   Globe,
   Trash2,
 } from 'lucide-react'
-import type { Category, Language, Product } from '@/lib/types'
+import type { Category, Language, Product } from '@/interface/types'
 
 const iconMap: Record<string, React.ElementType> = {
   Package,

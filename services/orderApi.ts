@@ -1,5 +1,5 @@
 import { api } from "@/lib/apiClient";
-import type { Address, Order, PaginatedResponse } from "@/lib/types";
+import type { Address, Order, PaginatedResponse } from "@/interface/types";
 import { unwrapList } from "./apiList";
 
 export type OrderPayload = {
