@@ -50,17 +50,12 @@ export function MembershipCard({ package_, className = '' }: MembershipCardProps
 
         {/* Benefits */}
         <ul className="space-y-2 mb-4">
-          {package_.benefits.slice(0, 4).map((benefit, index) => (
+          {package_.benefits.map((benefit, index) => (
             <li key={index} className="flex items-start gap-2 text-sm">
               <Check className="w-4 h-4 text-[#4FAE4E] shrink-0 mt-0.5" />
               <span>{benefit[language]}</span>
             </li>
           ))}
-          {package_.benefits.length > 4 && (
-            <li className="text-sm text-muted-foreground pl-6">
-              +{package_.benefits.length - 4} {language === 'vi' ? 'quyền lợi khác' : language === 'en' ? 'more benefits' : '更多权益'}
-            </li>
-          )}
         </ul>
 
         {/* Price and CTA */}

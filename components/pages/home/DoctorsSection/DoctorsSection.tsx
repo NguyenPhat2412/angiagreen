@@ -5,14 +5,15 @@ import { useLanguage } from '@/context/language-context'
 import { doctorServices } from '@/services/doctorApi'
 import { SectionHeading } from '@/components/ui/section-heading'
 import { DoctorCard } from '@/components/DoctorCard'
+import { doctors as mockDoctors } from '@/language/data'
 import type { Doctor } from '@/interface/types'
 
 export function DoctorsSection() {
   const { t } = useLanguage()
-  const [doctors, setDoctors] = useState<Doctor[]>([])
+  const [doctors, setDoctors] = useState<Doctor[]>(mockDoctors)
 
   useEffect(() => {
-    doctorServices.getAll().then(setDoctors).catch(() => setDoctors([]))
+    doctorServices.getAll().then(setDoctors).catch(() => setDoctors(mockDoctors))
   }, [])
 
   return (

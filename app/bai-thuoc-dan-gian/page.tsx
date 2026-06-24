@@ -13,14 +13,18 @@ import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/context/language-context";
+import { articles as mockArticles } from "@/language/data";
+import { mockPageContents } from "@/language/pageContent";
 import type { Article, ContentPage } from "@/interface/types";
 import { articleServices } from "@/services/articleApi";
 import { contentServices } from "@/services/contentApi";
 
 export default function FolkRemediesPage() {
   const { language, t } = useLanguage();
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [page, setPage] = useState<ContentPage | null>();
+  const [articles, setArticles] = useState<Article[]>(mockArticles);
+  const [page, setPage] = useState<ContentPage | null>(
+    mockPageContents["marketing.folk-remedies"] ?? null,
+  );
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -39,8 +43,8 @@ export default function FolkRemediesPage() {
         }
       } catch {
         if (isMounted) {
-          setArticles([]);
-          setPage(null);
+          setArticles(mockArticles);
+          setPage(mockPageContents["marketing.folk-remedies"] ?? null);
         }
       }
     };

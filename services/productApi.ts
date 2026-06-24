@@ -2,6 +2,7 @@ import { api } from "@/lib/apiClient";
 import type { PaginatedResponse, Product, Review } from "@/interface/types";
 import { unwrapList } from "./apiList";
 import { products } from "@/language/data";
+import { cachedRequest } from "./cache";
 
 export type ProductQuery = {
   categoryId?: string;
@@ -12,8 +13,8 @@ export type ProductQuery = {
 };
 
 export const productServices = {
-  getAll: async (params?: ProductQuery) =>
-    api.get<Product[] | PaginatedResponse<Product>>("/products", { params })
+  getAll: async (params?: ProductQuery) => {
+    const fetchProducts = () => api.get<Product[] | PaginatedResponse<Product>>("/products", { params })
       .then(unwrapList)
       .catch(() => {
         let list = products;
@@ -25,7 +26,12 @@ export const productServices = {
           list = list.filter((p) => p.name.vi.toLowerCase().includes(s) || p.name.en.toLowerCase().includes(s));
         }
         return list;
-      }),
+      });
+
+    return params
+      ? fetchProducts()
+      : cachedRequest("products:all", fetchProducts, products);
+  },
   getPaginated: (params?: ProductQuery) =>
     api.get<PaginatedResponse<Product>>("/products", { params })
       .catch(() => {
@@ -52,7 +58,7 @@ export const productServices = {
   getBySlug: (slug: string) =>
     api.get<Product>(`/products/${slug}`)
       .catch(() => {
-        const prod = products.find((p) => p.id === slug);
+        const prod = products.find((p) => p.id === slug || p.slug === slug);
         if (prod) return prod;
         throw new Error("Product not found");
       }),

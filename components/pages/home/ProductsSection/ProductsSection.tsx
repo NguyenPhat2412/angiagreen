@@ -6,6 +6,7 @@ import { productServices } from "@/services/productApi";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
+import { products as mockProducts } from "@/language/data";
 import type { Product } from "@/interface/types";
 
 interface ProductsSectionProps {
@@ -27,10 +28,10 @@ export function ProductsSection({
 }: ProductsSectionProps) {
   const { language, t } = useLanguage();
   const [activeTab, setActiveTab] = useState(tabs?.[0]?.id || "");
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(mockProducts);
 
   useEffect(() => {
-    productServices.getAll().then(setProducts).catch(() => setProducts([]));
+    productServices.getAll().then(setProducts).catch(() => setProducts(mockProducts));
   }, []);
 
   const filteredProducts =

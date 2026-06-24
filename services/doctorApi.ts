@@ -2,6 +2,7 @@ import { api } from "@/lib/apiClient";
 import type { Doctor, PaginatedResponse } from "@/interface/types";
 import { unwrapList } from "./apiList";
 import { doctors } from "@/language/data";
+import { cachedRequest } from "./cache";
 
 export type DoctorQuery = {
   specialty?: string;
@@ -12,10 +13,15 @@ export type DoctorQuery = {
 };
 
 export const doctorServices = {
-  getAll: async (params?: DoctorQuery) =>
-    api.get<Doctor[] | PaginatedResponse<Doctor>>("/doctors", { params })
+  getAll: async (params?: DoctorQuery) => {
+    const fetchDoctors = () => api.get<Doctor[] | PaginatedResponse<Doctor>>("/doctors", { params })
       .then(unwrapList)
-      .catch(() => doctors),
+      .catch(() => doctors);
+
+    return params
+      ? fetchDoctors()
+      : cachedRequest("doctors:all", fetchDoctors, doctors);
+  },
   getPaginated: (params?: DoctorQuery) =>
     api.get<PaginatedResponse<Doctor>>("/doctors", { params })
       .catch(() => ({

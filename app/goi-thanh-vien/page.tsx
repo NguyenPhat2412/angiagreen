@@ -12,14 +12,18 @@ import {
 import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/context/language-context";
+import { membershipPackages as mockMembershipPackages } from "@/language/data";
+import { mockPageContents } from "@/language/pageContent";
 import { membershipServices } from "@/services/membershipApi";
 import { contentServices } from "@/services/contentApi";
 import type { ContentPage, MembershipPackage } from "@/interface/types";
 
 export default function MembershipPackagesPage() {
   const { language, t } = useLanguage();
-  const [packages, setPackages] = useState<MembershipPackage[]>([]);
-  const [page, setPage] = useState<ContentPage | null>();
+  const [packages, setPackages] = useState<MembershipPackage[]>(mockMembershipPackages);
+  const [page, setPage] = useState<ContentPage | null>(
+    mockPageContents["marketing.membership-packages"] ?? null,
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -37,8 +41,8 @@ export default function MembershipPackagesPage() {
         }
       } catch {
         if (isMounted) {
-          setPackages([]);
-          setPage(null);
+          setPackages(mockMembershipPackages);
+          setPage(mockPageContents["marketing.membership-packages"] ?? null);
         }
       }
     };

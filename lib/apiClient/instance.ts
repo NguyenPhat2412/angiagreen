@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { getAuthToken } from "@/lib/authSession";
 
 export type ApiErrorResponse = {
   message?: string;
@@ -18,7 +19,7 @@ export const apiClient = axios.create({
 // Attach browser token automatically when requests run on the client.
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token");
+    const token = getAuthToken();
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

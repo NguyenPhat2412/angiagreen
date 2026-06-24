@@ -9,21 +9,26 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/context/language-context";
+import { doctors as mockDoctors } from "@/language/data";
 import { doctorServices } from "@/services/doctorApi";
 import type { Doctor } from "@/interface/types";
 
 export default function MedicalConsultantDetailPage() {
   const params = useParams();
   const { language, t } = useLanguage();
-  const [doctor, setDoctor] = useState<Doctor | null>();
   const doctorId = Array.isArray(params.id) ? params.id[0] : params.id;
+  const [doctor, setDoctor] = useState<Doctor | null | undefined>(
+    doctorId ? mockDoctors.find((item) => item.id === doctorId) ?? null : undefined,
+  );
 
   useEffect(() => {
     if (!doctorId) {
       return;
     }
 
-    doctorServices.getById(doctorId).then(setDoctor).catch(() => setDoctor(null));
+    const localDoctor = mockDoctors.find((item) => item.id === doctorId) ?? null;
+    setDoctor(localDoctor);
+    doctorServices.getById(doctorId).then(setDoctor).catch(() => setDoctor(localDoctor));
   }, [doctorId]);
 
   if (doctor === undefined) {

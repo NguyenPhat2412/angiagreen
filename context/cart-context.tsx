@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 import { productServices } from '@/services/productApi'
+import { products as mockProducts } from '@/language/data'
 import type { CartItem, Product } from '../interface/types'
 
 interface CartContextType {
@@ -18,10 +19,10 @@ const CartContext = createContext<CartContextType | undefined>(undefined)
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
-  const [products, setProducts] = useState<Product[]>([])
+  const [products, setProducts] = useState<Product[]>(mockProducts)
 
   useEffect(() => {
-    productServices.getAll().then(setProducts).catch(() => setProducts([]))
+    productServices.getAll().then(setProducts).catch(() => setProducts(mockProducts))
   }, [])
 
   const addItem = (productId: string, quantity: number = 1) => {

@@ -2,6 +2,7 @@ import { api } from "@/lib/apiClient";
 import type { MembershipLevel, MembershipPackage, MembershipOrder, Address, PaginatedResponse } from "@/interface/types";
 import { unwrapList } from "./apiList";
 import { membershipPackages } from "@/language/data";
+import { cachedRequest } from "./cache";
 
 export interface MembershipOrderPayload {
   packageId: string;
@@ -13,8 +14,12 @@ export interface MembershipOrderPayload {
 
 export const membershipServices = {
   getLevels: () => api.get<MembershipLevel[]>("/membership-levels"),
-  getPackages: () => api.get<MembershipPackage[]>("/membership-packages")
-    .catch(() => membershipPackages),
+  getPackages: () =>
+    cachedRequest(
+      "membership-packages:all",
+      () => api.get<MembershipPackage[]>("/membership-packages"),
+      membershipPackages,
+    ),
   createOrder: (data: MembershipOrderPayload) =>
     api.post<{ order: MembershipOrder; paymentUrl?: string }>("/membership-orders", data),
   getMyOrders: async () =>

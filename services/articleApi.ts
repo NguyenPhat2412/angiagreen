@@ -2,6 +2,7 @@ import { api } from "@/lib/apiClient";
 import type { Article, PaginatedResponse } from "@/interface/types";
 import { unwrapList } from "./apiList";
 import { articles } from "@/language/data";
+import { cachedRequest } from "./cache";
 
 export type ArticleQuery = {
   category?: string;
@@ -12,10 +13,15 @@ export type ArticleQuery = {
 };
 
 export const articleServices = {
-  getAll: async (params?: ArticleQuery) =>
-    api.get<Article[] | PaginatedResponse<Article>>("/articles", { params })
+  getAll: async (params?: ArticleQuery) => {
+    const fetchArticles = () => api.get<Article[] | PaginatedResponse<Article>>("/articles", { params })
       .then(unwrapList)
-      .catch(() => articles),
+      .catch(() => articles);
+
+    return params
+      ? fetchArticles()
+      : cachedRequest("articles:all", fetchArticles, articles);
+  },
   getPaginated: (params?: ArticleQuery) =>
     api.get<PaginatedResponse<Article>>("/articles", { params })
       .catch(() => ({

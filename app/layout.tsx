@@ -8,6 +8,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import FloatingContactButtons from '@/components/layout/FloatingContactButtons'
 import { DynamicNotificationToast } from '@/components/layout/DynamicNotificationToast'
+import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
 const _geist = Geist({ subsets: ['latin'] })
@@ -65,6 +66,7 @@ export default function RootLayout({
               <Footer />
               <FloatingContactButtons />
               <DynamicNotificationToast />
+              <Toaster position="top-right" richColors />
             </CartProvider>
           </AuthProvider>
         </LanguageProvider>

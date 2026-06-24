@@ -5,14 +5,15 @@ import { useLanguage } from '@/context/language-context'
 import { articleServices } from '@/services/articleApi'
 import { SectionHeading } from '@/components/ui/section-heading'
 import { ArticleCard } from '@/components/ArticleCard'
+import { articles as mockArticles } from '@/language/data'
 import type { Article } from '@/interface/types'
 
 export function NewsSection() {
   const { t } = useLanguage()
-  const [articles, setArticles] = useState<Article[]>([])
+  const [articles, setArticles] = useState<Article[]>(mockArticles)
 
   useEffect(() => {
-    articleServices.getAll().then(setArticles).catch(() => setArticles([]))
+    articleServices.getAll().then(setArticles).catch(() => setArticles(mockArticles))
   }, [])
 
   const latestNews = articles.slice(0, 4)

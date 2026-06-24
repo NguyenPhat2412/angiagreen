@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { toast } from "sonner";
 import { Calendar, User, ArrowRight, Search, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/context/language-context";
+import { articles as mockArticles } from "@/language/data";
 import { articleServices } from "@/services/articleApi";
+import { newsletterServices } from "@/services/newsletterApi";
 import Breadcrumb from "@/components/Breadcrumb";
 import type { Article } from "@/interface/types";
 
@@ -34,14 +37,49 @@ const tags = [
 
 export default function NewsPage() {
   const { language, t } = useLanguage();
-  const [articles, setArticles] = useState<Article[]>([]);
+  const [articles, setArticles] = useState<Article[]>(mockArticles);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
 
   useEffect(() => {
-    articleServices.getAll().then(setArticles).catch(() => setArticles([]));
+    articleServices.getAll().then(setArticles).catch(() => setArticles(mockArticles));
   }, []);
 
   const featuredArticle = articles[0];
   const recentArticles = articles.slice(1);
+
+  const handleNewsletterSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!newsletterEmail.trim() || !newsletterEmail.includes("@")) {
+      toast.error(
+        language === "vi"
+          ? "Vui lòng nhập email hợp lệ."
+          : language === "zh"
+            ? "请输入有效的电子邮箱。"
+            : "Please enter a valid email.",
+      );
+      return;
+    }
+
+    setIsSubscribing(true);
+
+    try {
+      const response = await newsletterServices.subscribe(newsletterEmail, language);
+      toast.success(response.message[language]);
+      setNewsletterEmail("");
+    } catch {
+      toast.error(
+        language === "vi"
+          ? "Chưa thể đăng ký nhận tin. Vui lòng thử lại."
+          : language === "zh"
+            ? "暂时无法订阅，请重试。"
+            : "Unable to subscribe right now. Please try again.",
+      );
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
 
   if (!featuredArticle) {
     return <main className="min-h-screen bg-muted/30" />;
@@ -218,13 +256,24 @@ export default function NewsPage() {
                 <p className="text-sm text-primary-foreground/80 mb-4">
                   {t("newsSubscribeDesc")}
                 </p>
-                <Input
-                  placeholder={t("yourEmail")}
-                  className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 mb-3"
-                />
-                <Button variant="secondary" className="w-full">
-                  {t("subscribeButton")}
-                </Button>
+                <form onSubmit={handleNewsletterSubmit}>
+                  <Input
+                    type="email"
+                    value={newsletterEmail}
+                    onChange={(event) => setNewsletterEmail(event.target.value)}
+                    placeholder={t("yourEmail")}
+                    className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 mb-3"
+                  />
+                  <Button variant="secondary" className="w-full" disabled={isSubscribing}>
+                    {isSubscribing
+                      ? language === "vi"
+                        ? "Đang gửi..."
+                        : language === "zh"
+                          ? "发送中..."
+                          : "Sending..."
+                      : t("subscribeButton")}
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           </div>

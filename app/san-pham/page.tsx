@@ -9,6 +9,7 @@ import { ProductCard } from '@/components/ProductCard'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { categories as mockCategories, products as mockProducts } from '@/language/data'
 import {
   Select,
   SelectContent,
@@ -28,8 +29,8 @@ function ProductsContent() {
   const [selectedCategory, setSelectedCategory] = useState(categorySlug || 'all')
   const [sortBy, setSortBy] = useState('newest')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [products, setProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
+  const [products, setProducts] = useState<Product[]>(mockProducts)
+  const [categories, setCategories] = useState<Category[]>(mockCategories)
 
   useEffect(() => {
     Promise.all([productServices.getAll(), categoryServices.getAll()])
@@ -38,8 +39,8 @@ function ProductsContent() {
         setCategories(nextCategories)
       })
       .catch(() => {
-        setProducts([])
-        setCategories([])
+        setProducts(mockProducts)
+        setCategories(mockCategories)
       })
   }, [])
 

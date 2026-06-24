@@ -8,14 +8,43 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLanguage } from "@/context/language-context";
 import { authServices } from "@/services/authApi";
+import type { Language } from "@/interface/types";
 
 type ResetStep = "email" | "otp" | "success";
 
 const resetHint =
   "Nếu email tồn tại trong hệ thống, chúng tôi sẽ gửi mã OTP để khôi phục mật khẩu.";
 
+const otpErrorCopy: Record<Language, { cooldown: string; sendFailed: string; resetFailed: string }> = {
+  vi: {
+    cooldown: "Vui lòng chờ trước khi yêu cầu mã OTP mới.",
+    sendFailed: "Không thể gửi OTP.",
+    resetFailed: "Không thể đặt lại mật khẩu.",
+  },
+  en: {
+    cooldown: "Please wait before requesting another OTP.",
+    sendFailed: "Unable to send OTP.",
+    resetFailed: "Unable to reset password.",
+  },
+  zh: {
+    cooldown: "请稍候再请求新的 OTP 验证码。",
+    sendFailed: "无法发送 OTP 验证码。",
+    resetFailed: "无法重置密码。",
+  },
+};
+
+const translateOtpError = (message: string, language: Language) => {
+  if (message.toLowerCase().includes("please wait before requesting another otp")) {
+    return otpErrorCopy[language].cooldown;
+  }
+
+  return message;
+};
+
 export default function ForgotPasswordPage() {
+  const { language } = useLanguage();
   const [step, setStep] = useState<ResetStep>("email");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -56,7 +85,9 @@ export default function ForgotPasswordPage() {
       setCooldown(response.resendAfter ?? 30);
       setMessage(resetHint);
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Không thể gửi OTP.");
+      const message =
+        requestError instanceof Error ? requestError.message : otpErrorCopy[language].sendFailed;
+      setError(translateOtpError(message, language));
     } finally {
       setIsSubmitting(false);
     }
@@ -87,7 +118,9 @@ export default function ForgotPasswordPage() {
       });
       setStep("success");
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : "Không thể đặt lại mật khẩu.");
+      const message =
+        requestError instanceof Error ? requestError.message : otpErrorCopy[language].resetFailed;
+      setError(translateOtpError(message, language));
     } finally {
       setIsSubmitting(false);
     }

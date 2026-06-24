@@ -28,8 +28,12 @@ export function AccountFeaturePage({
   icon: Icon,
   title,
 }: AccountFeaturePageProps) {
-  const { isLoggedIn, user } = useAuth();
+  const { hasSession, isLoggedIn, isSessionLoading, user } = useAuth();
   const { t } = useLanguage();
+
+  if (isSessionLoading || (hasSession && !user)) {
+    return <main className="min-h-screen bg-muted/30" />;
+  }
 
   if (!isLoggedIn || !user) {
     return (

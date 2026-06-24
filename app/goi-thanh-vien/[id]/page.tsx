@@ -10,7 +10,8 @@ import { localizedText } from "@/components/pages/shared/contentHelpers";
 import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatPrice } from "@/language/data";
+import { formatPrice, membershipPackages as mockMembershipPackages } from "@/language/data";
+import { mockPageContents } from "@/language/pageContent";
 import { useLanguage } from "@/context/language-context";
 import { useAuth } from "@/context/auth-context";
 import { membershipServices } from "@/services/membershipApi";
@@ -20,9 +21,11 @@ import type { ContentPage, MembershipPackage } from "@/interface/types";
 export default function MembershipPackageDetailPage() {
   const params = useParams();
   const { language } = useLanguage();
-  const { isLoggedIn } = useAuth();
-  const [packages, setPackages] = useState<MembershipPackage[]>([]);
-  const [page, setPage] = useState<ContentPage | null>();
+  const { hasSession, isLoggedIn } = useAuth();
+  const [packages, setPackages] = useState<MembershipPackage[]>(mockMembershipPackages);
+  const [page, setPage] = useState<ContentPage | null>(
+    mockPageContents["marketing.membership-package-detail"] ?? null,
+  );
   const packageId = Array.isArray(params.id) ? params.id[0] : params.id;
 
   useEffect(() => {
@@ -41,8 +44,8 @@ export default function MembershipPackageDetailPage() {
         }
       } catch {
         if (isMounted) {
-          setPackages([]);
-          setPage(null);
+          setPackages(mockMembershipPackages);
+          setPage(mockPageContents["marketing.membership-package-detail"] ?? null);
         }
       }
     };
@@ -110,7 +113,7 @@ export default function MembershipPackageDetailPage() {
               </div>
               <div className="mt-6 grid gap-3">
                 <Button asChild>
-                  <Link href={isLoggedIn ? `/goi-thanh-vien/thanh-toan?id=${packageDetail.id}` : `/dang-ky?redirect=/goi-thanh-vien/thanh-toan?id=${packageDetail.id}`}>Đăng ký gói</Link>
+                  <Link href={isLoggedIn || hasSession ? `/goi-thanh-vien/thanh-toan?id=${packageDetail.id}` : `/dang-ky?redirect=/goi-thanh-vien/thanh-toan?id=${packageDetail.id}`}>Đăng ký gói</Link>
                 </Button>
                 <Button variant="outline" asChild>
                   <Link href="/tu-van">

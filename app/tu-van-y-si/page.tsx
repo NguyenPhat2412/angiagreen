@@ -12,14 +12,18 @@ import {
 import { getContentIcon } from "@/components/pages/shared/contentIconMap";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/context/language-context";
+import { doctors as mockDoctors } from "@/language/data";
+import { mockPageContents } from "@/language/pageContent";
 import { doctorServices } from "@/services/doctorApi";
 import { contentServices } from "@/services/contentApi";
 import type { ContentPage, Doctor } from "@/interface/types";
 
 export default function MedicalConsultantsPage() {
   const { language, t } = useLanguage();
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [page, setPage] = useState<ContentPage | null>();
+  const [doctors, setDoctors] = useState<Doctor[]>(mockDoctors);
+  const [page, setPage] = useState<ContentPage | null>(
+    mockPageContents["marketing.medical-consultants"] ?? null,
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -37,8 +41,8 @@ export default function MedicalConsultantsPage() {
         }
       } catch {
         if (isMounted) {
-          setDoctors([]);
-          setPage(null);
+          setDoctors(mockDoctors);
+          setPage(mockPageContents["marketing.medical-consultants"] ?? null);
         }
       }
     };

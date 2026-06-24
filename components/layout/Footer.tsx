@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { useLanguage } from '@/context/language-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { newsletterServices } from '@/services/newsletterApi'
 import {
   MapPin,
   Phone,
@@ -29,6 +30,7 @@ export default function Footer() {
   const [email, setEmail] = useState('')
   const [showWelcome, setShowWelcome] = useState(false)
   const [subscribedEmail, setSubscribedEmail] = useState('')
+  const [isSubscribing, setIsSubscribing] = useState(false)
 
   const aboutLinks = [
     { label: { vi: 'Giới thiệu', en: 'About Us', zh: '关于我们' }, href: '/gioi-thieu' },
@@ -53,7 +55,7 @@ export default function Footer() {
     { label: { vi: 'Liên hệ hỗ trợ', en: 'Contact Support', zh: '联系支持' }, href: '/lien-he' },
   ]
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email || !email.includes('@')) {
       toast.error(
@@ -65,16 +67,26 @@ export default function Footer() {
       )
       return
     }
-    setSubscribedEmail(email)
-    setShowWelcome(true)
-    toast.success(
-      language === 'vi' 
-        ? 'Đăng ký nhận tin thành công! Cảm ơn bạn.' 
-        : language === 'en' 
-        ? 'Subscribed successfully! Thank you.' 
-        : '订阅成功！谢谢您。'
-    )
-    setEmail('')
+    setIsSubscribing(true)
+
+    try {
+      const response = await newsletterServices.subscribe(email, language)
+      setSubscribedEmail(response.email)
+      setShowWelcome(true)
+      toast.success(response.message[language])
+      setEmail('')
+    } catch {
+      toast.error(
+        language === 'vi'
+          ? 'Chưa thể đăng ký nhận tin. Vui lòng thử lại.'
+          : language === 'en'
+          ? 'Unable to subscribe right now. Please try again.'
+          : '暂时无法订阅，请重试。'
+      )
+    } finally {
+      setIsSubscribing(false)
+    }
+
   }
 
   return (
@@ -111,7 +123,7 @@ export default function Footer() {
                   placeholder={t('newsletterPlaceholder')}
                   className="bg-white/10 border-white/20 text-white placeholder:text-white/50 flex-1"
                 />
-                <Button type="submit" className="bg-[#4FAE4E] hover:bg-[#7BC96F] text-white">
+                <Button type="submit" className="bg-[#4FAE4E] hover:bg-[#7BC96F] text-white" disabled={isSubscribing}>
                   <Send className="w-4 h-4" />
                 </Button>
               </form>

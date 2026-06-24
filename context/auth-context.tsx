@@ -4,12 +4,25 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { authServices } from "@/services/authApi";
 import { orderServices } from "@/services/orderApi";
 import { userServices } from "@/services/userApi";
+import {
+  clearAuthSession,
+  createMockSsoSession,
+  getAuthToken,
+  isMockSsoToken,
+  persistAuthSession,
+  readAuthSession,
+  type AuthSession,
+  type SsoProvider,
+} from "@/lib/authSession";
 import type { Order, User } from "../interface/types";
 
 interface AuthContextType {
   user: User | null;
+  hasSession: boolean;
   isLoggedIn: boolean;
+  isSessionLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
+  loginWithSso: (provider: SsoProvider) => Promise<boolean>;
   register: (name: string, email: string, phone: string, password: string) => Promise<boolean>;
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<void>;
@@ -19,58 +32,82 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const USER_STORAGE_KEY = "angiagreen_user";
-const TOKEN_STORAGE_KEY = "token";
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [isSessionLoading, setIsSessionLoading] = useState(true);
 
-  const persistSession = (nextUser: User, token?: string) => {
-    setUser(nextUser);
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser));
+  const persistSession = (nextUser: User, session?: Partial<AuthSession>) => {
+    const token = session?.token || sessionToken || getAuthToken();
 
-    if (token) {
-      localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    if (!token) {
+      setUser(nextUser);
+      return;
     }
+
+    const nextSession: AuthSession = {
+      createdAt: session?.createdAt || new Date().toISOString(),
+      provider: session?.provider || "credentials",
+      refreshToken: session?.refreshToken,
+      token,
+      user: nextUser,
+    };
+
+    setUser(nextUser);
+    setSessionToken(token);
+    persistAuthSession(nextSession);
   };
 
   const clearSession = () => {
     setUser(null);
     setOrders([]);
-    localStorage.removeItem(USER_STORAGE_KEY);
-    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    setSessionToken(null);
+    clearAuthSession();
   };
 
   const refreshOrders = async () => {
-    if (!localStorage.getItem(TOKEN_STORAGE_KEY)) {
+    const token = getAuthToken();
+
+    if (!token || isMockSsoToken(token)) {
       setOrders([]);
       return;
     }
 
-    const nextOrders = await orderServices.getMy();
-    setOrders(nextOrders);
+    try {
+      const nextOrders = await orderServices.getMy();
+      setOrders(nextOrders);
+    } catch {
+      setOrders([]);
+    }
   };
 
   useEffect(() => {
     const restoreSession = async () => {
-      const token = localStorage.getItem(TOKEN_STORAGE_KEY);
-      const savedUser = localStorage.getItem(USER_STORAGE_KEY);
+      const savedSession = readAuthSession();
 
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
+      if (!savedSession?.token) {
+        clearSession();
+        setIsSessionLoading(false);
+        return;
       }
 
-      if (!token) {
+      setUser(savedSession.user);
+      setSessionToken(savedSession.token);
+
+      if (isMockSsoToken(savedSession.token)) {
+        setIsSessionLoading(false);
         return;
       }
 
       try {
         const currentUser = await authServices.me();
-        persistSession(currentUser);
+        persistSession(currentUser, savedSession);
         await refreshOrders();
       } catch {
         clearSession();
+      } finally {
+        setIsSessionLoading(false);
       }
     };
 
@@ -79,12 +116,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const { user: nextUser, token } = await authServices.login({ email, password });
-      persistSession(nextUser, token);
+      const response = await authServices.login({ email, password });
+      const token = response.token || response.accessToken;
+
+      if (!token) {
+        return false;
+      }
+
+      persistSession(response.user, {
+        provider: "credentials",
+        refreshToken: response.refreshToken,
+        token,
+      });
       await refreshOrders();
       return true;
     } catch {
       return false;
+    }
+  };
+
+  const loginWithSso = async (provider: SsoProvider): Promise<boolean> => {
+    try {
+      const response = await authServices.loginWithSso({
+        provider,
+        redirectUri: typeof window !== "undefined" ? window.location.origin : undefined,
+      });
+      const token = response.token || response.accessToken;
+
+      if (!token) {
+        throw new Error("Missing SSO token");
+      }
+
+      persistSession(response.user, {
+        provider,
+        refreshToken: response.refreshToken,
+        token,
+      });
+      await refreshOrders();
+      return true;
+    } catch {
+      const mockSession = createMockSsoSession(provider);
+      persistSession(mockSession.user, mockSession);
+      setOrders([]);
+      return true;
     }
   };
 
@@ -95,13 +169,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string
   ): Promise<boolean> => {
     try {
-      const { user: nextUser, token } = await authServices.register({
+      const response = await authServices.register({
         name,
         email,
         phone,
         password,
       });
-      persistSession(nextUser, token);
+      const token = response.token || response.accessToken;
+
+      if (!token) {
+        return false;
+      }
+
+      persistSession(response.user, {
+        provider: "credentials",
+        refreshToken: response.refreshToken,
+        token,
+      });
       setOrders([]);
       return true;
     } catch {
@@ -110,6 +194,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    const session = readAuthSession();
+    if (session?.refreshToken && !isMockSsoToken(session.token)) {
+      authServices.logout({ refreshToken: session.refreshToken }).catch(() => {});
+    }
     clearSession();
   };
 
@@ -122,12 +210,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     persistSession(updatedUser);
   };
 
+  const hasSession = Boolean(sessionToken);
+
   return (
     <AuthContext.Provider
       value={{
         user,
-        isLoggedIn: !!user,
+        hasSession,
+        isLoggedIn: Boolean(user && hasSession),
+        isSessionLoading,
         login,
+        loginWithSso,
         register,
         logout,
         updateProfile,

@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useLanguage } from '@/context/language-context'
 import { useCart } from '@/context/cart-context'
-import { formatPrice } from '@/language/data'
+import { categories as mockCategories, formatPrice, products as mockProducts } from '@/language/data'
 import { categoryServices } from '@/services/categoryApi'
 import { productServices } from '@/services/productApi'
 import { ProductCard } from '@/components/ProductCard'
@@ -44,18 +44,26 @@ export default function ProductDetailPage() {
   const router = useRouter()
   const { language } = useLanguage()
   const { addItem } = useCart()
+  const productSlug = Array.isArray(slug) ? slug[0] : slug
+  const initialProduct = productSlug
+    ? mockProducts.find((item) => item.slug === productSlug || item.id === productSlug) ?? null
+    : undefined
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
-  const [product, setProduct] = useState<Product | null>()
-  const [products, setProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-
-  const productSlug = Array.isArray(slug) ? slug[0] : slug
+  const [product, setProduct] = useState<Product | null | undefined>(initialProduct)
+  const [products, setProducts] = useState<Product[]>(mockProducts)
+  const [categories, setCategories] = useState<Category[]>(mockCategories)
 
   useEffect(() => {
     if (!productSlug) {
       return
     }
+
+    const localProduct =
+      mockProducts.find((item) => item.slug === productSlug || item.id === productSlug) ?? null
+    setProduct(localProduct)
+    setProducts(mockProducts)
+    setCategories(mockCategories)
 
     Promise.all([
       productServices.getBySlug(productSlug),
@@ -67,7 +75,7 @@ export default function ProductDetailPage() {
         setProducts(nextProducts)
         setCategories(nextCategories)
       })
-      .catch(() => setProduct(null))
+      .catch(() => setProduct(localProduct))
   }, [productSlug])
 
   const t = {

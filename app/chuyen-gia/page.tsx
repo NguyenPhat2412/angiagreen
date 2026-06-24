@@ -8,14 +8,15 @@ import { DoctorsGridSection } from "@/components/pages/chuyen-gia/DoctorsGridSec
 import { DoctorsHeroSection } from "@/components/pages/chuyen-gia/DoctorsHeroSection/DoctorsHeroSection";
 import { ExpertStatsSection } from "@/components/pages/chuyen-gia/ExpertStatsSection/ExpertStatsSection";
 import { WhyChooseExpertsSection } from "@/components/pages/chuyen-gia/WhyChooseExpertsSection/WhyChooseExpertsSection";
+import { doctors as mockDoctors } from "@/language/data";
 import type { Doctor } from "@/interface/types";
 
 export default function DoctorsPage() {
   const { language, t } = useLanguage();
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>(mockDoctors);
 
   useEffect(() => {
-    doctorServices.getAll().then(setDoctors).catch(() => setDoctors([]));
+    doctorServices.getAll().then(setDoctors).catch(() => setDoctors(mockDoctors));
   }, []);
 
   return (

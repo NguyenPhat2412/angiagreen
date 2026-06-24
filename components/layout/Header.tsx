@@ -5,7 +5,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useLanguage } from '@/context/language-context'
 import { useCart } from '@/context/cart-context'
-import { formatPrice } from '@/language/data'
+import { useAuth } from '@/context/auth-context'
+import { categories as mockCategories, formatPrice, products as mockProducts } from '@/language/data'
 import { categoryServices } from '@/services/categoryApi'
 import { productServices } from '@/services/productApi'
 import { Button } from '@/components/ui/button'
@@ -58,11 +59,12 @@ const navItems = [
 export default function Header() {
   const { language, setLanguage, t } = useLanguage()
   const { items, getItemCount, getTotal, removeItem } = useCart()
+  const { hasSession, isLoggedIn } = useAuth()
   const [showCategories, setShowCategories] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showLangDropdown, setShowLangDropdown] = useState(false)
-  const [categories, setCategories] = useState<Category[]>([])
-  const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>(mockCategories)
+  const [products, setProducts] = useState<Product[]>(mockProducts)
 
   useEffect(() => {
     Promise.all([categoryServices.getAll(), productServices.getAll()])
@@ -71,8 +73,8 @@ export default function Header() {
         setProducts(nextProducts)
       })
       .catch(() => {
-        setCategories([])
-        setProducts([])
+        setCategories(mockCategories)
+        setProducts(mockProducts)
       })
   }, [])
 
@@ -153,7 +155,7 @@ export default function Header() {
               </Button>
 
               {/* Login */}
-              <Link href="/dang-nhap">
+              <Link href={isLoggedIn || hasSession ? "/tai-khoan" : "/dang-nhap"}>
                 <Button
                   variant="ghost"
                   size="icon"

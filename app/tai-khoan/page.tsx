@@ -148,16 +148,20 @@ const accountCopy = {
 
 export default function AccountPage() {
   const router = useRouter();
-  const { user, isLoggedIn, logout, orders } = useAuth();
+  const { user, hasSession, isLoggedIn, isSessionLoading, logout, orders } = useAuth();
   const { language, t } = useLanguage();
   const [activeTab, setActiveTab] = useState("overview");
   const copy = accountCopy[language];
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isSessionLoading && !hasSession) {
       router.push("/dang-nhap");
     }
-  }, [isLoggedIn, router]);
+  }, [hasSession, isSessionLoading, router]);
+
+  if (isSessionLoading || (hasSession && !user)) {
+    return <main className="min-h-screen bg-muted/30" />;
+  }
 
   if (!isLoggedIn || !user) {
     return null;
